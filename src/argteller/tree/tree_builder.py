@@ -53,3 +53,5 @@ def _display_tree(node):
     for child in node.children:
 
         _display_tree(child)
+
+        
