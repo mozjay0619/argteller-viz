@@ -29,6 +29,10 @@ class VerifyVersionCommand(install):
             )
             sys.exit(info)
 
+tests_require = [
+    'IPython'
+    ]
+
 setuptools.setup(
     name="argteller-viz",
     version=VERSION,
@@ -40,6 +44,7 @@ setuptools.setup(
     license="DSB 3-clause",
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
+    tests_require=tests_require,
     # install_requires=[
     #     'requests==2.18.4',
     # ],
