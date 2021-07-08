@@ -256,8 +256,6 @@ def ArgtellerMethodDecorator(source_name, topic=None):
                     # position argument list.
                     if len(args)>=i:
                         
-                        print(args[i-1], args)
-                        
                         new_args.append(args[i-1])
                     
                     elif param.name in kwargs:
