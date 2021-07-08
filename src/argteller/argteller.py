@@ -161,7 +161,27 @@ class ArgtellerClassDecorator():
                 """
                 if cls_self.__access_object__.module_found and elem in cls_self.__access_object__.get_params():
 
-                    return cls_self.__access_object__.get_value(elem, cls_self.topic)
+                    value = cls_self.__access_object__.get_value(elem, cls_self.topic)
+
+                    try:    
+                        value = int(value)
+                        return value
+                    except ValueError:
+                        pass
+                    
+                    try:
+                        value = float(value)
+                        return value
+                    except ValueError:
+                        pass
+                    
+                    try:
+                        value = eval(value)
+                        return value
+                    except NameError:
+                        pass
+                    
+                    return value
 
                 else:
                     
