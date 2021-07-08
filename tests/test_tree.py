@@ -1,0 +1,1 @@
+from argteller.argteller import ArgtellerClassDecorator
