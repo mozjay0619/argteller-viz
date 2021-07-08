@@ -29,6 +29,10 @@ class VerifyVersionCommand(install):
             )
             sys.exit(info)
 
+# tests_require = [
+#     'IPython'
+#     ]
+
 setuptools.setup(
     name="argteller-viz",
     version=VERSION,
