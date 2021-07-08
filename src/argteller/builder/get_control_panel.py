@@ -1,12 +1,18 @@
-from IPython.display import display
-import ipywidgets as widgets
-from ipywidgets import HBox, Label, VBox
-from ipywidgets import Button, Layout, HTML
-
 from ..widgets.dynamic_widgets import DynamicSwitch
 
+try:
+
+    from IPython.display import display
+    import ipywidgets as widgets
+    from ipywidgets import HBox, Label, VBox
+    from ipywidgets import Button, Layout, HTML
+
+except ModuleNotFoundError:
+
+    pass
+
 def get_control_panel(access_object):
-    
+
     def on_update_topic_choice(*args):
 
         tab_children = []
@@ -31,10 +37,6 @@ def get_control_panel(access_object):
         disabled=False,
         style=style
     )
-
-
-
-
 
     label = widgets.Label(value='Select modes (keep shift and/or ctrl (or command) pressed)')
 

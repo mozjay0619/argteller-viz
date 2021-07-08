@@ -3,12 +3,18 @@ from .tree.tree_builder import construct_tree
 from .builder.access_object import AccessObject
 from .builder.get_control_panel import get_control_panel
 
-from IPython.display import display
+try:
+    
+    from IPython.display import display
 
+except ModuleNotFoundError:
+
+    pass
 
 import inspect
 import os
 import functools
+import warnings
 
 
 class ArgtellerClassDecorator():
@@ -109,12 +115,27 @@ class ArgtellerClassDecorator():
                 parsed_node_data = parse_dsl(self.dsl)
                 root, node_dicts = construct_tree(parsed_node_data)
                 cls_self.__access_object__ = AccessObject(root, node_dicts)
-                cls_self.__control_panel__ = get_control_panel(cls_self.__access_object__)
-                display(cls_self.__control_panel__)
-                cls_self.topic = None
+
+                if cls_self.__access_object__.module_found:
+
+                    cls_self.__control_panel__ = get_control_panel(cls_self.__access_object__)
+                    display(cls_self.__control_panel__)
                 
-                widget_params = cls_self.__access_object__.get_params()
-                
+                    widget_params = cls_self.__access_object__.get_params()
+                    cls_self.topic = None
+
+                else:
+
+                    warnings.filterwarnings('always')
+
+                    warnings.warn("Please install 'IPython' and 'ipywidgets' modules to enable widgets.", ImportWarning)
+
+
+                    warnings.filterwarnings(action='ignore', category=DeprecationWarning, module='ipykernel')
+
+                    
+                    widget_params = []
+
                 # Below missing positional arguments cannot be found in the widget 
                 # param namespace.
                 
@@ -140,7 +161,14 @@ class ArgtellerClassDecorator():
                 argument, or when the user queries for a parameter that is 
                 not specified in the original signature.
                 """
-                return cls_self.__access_object__.get_value(elem, cls_self.topic)
+
+                if cls_self.__access_object__.module_found and elem in cls_self.__access_object__.get_params():
+
+                    return cls_self.__access_object__.get_value(elem, cls_self.topic)
+
+                else:
+                    
+                    raise AttributeError("'{}' object has no attribute '{}'!".format(cls.__name__, elem))
                 
             def __settopic__(cls_self, topic):
                 
@@ -160,9 +188,3 @@ class ArgtellerClassDecorator():
 
         return Wrapped
 
-
-
-
-
-            
-    

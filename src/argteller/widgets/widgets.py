@@ -1,11 +1,26 @@
-from IPython.display import display
-import ipywidgets as widgets
-from ipywidgets import HBox, Label, VBox
-from ipywidgets import Button, Layout, HTML
+try:
+
+    from IPython.display import display
+    import ipywidgets as widgets
+    from ipywidgets import HBox, Label, VBox
+    from ipywidgets import Button, Layout, HTML
+    from traitlets import MetaHasTraits
+
+except ModuleNotFoundError:
+
+    class VBox():
+        pass
+
+    class MetaHasTraits():
+        pass
+        
 
 class ParamChoiceWidget(VBox):
     
     def __init__(self, name, options, default_value, optional=False, widget=None):
+
+        if not isinstance(VBox, MetaHasTraits):
+            return
 
         self.name = name
         
@@ -32,6 +47,10 @@ class ParamSetterWidget(VBox):
 
     def __init__(self, name, widget, default_value):
 
+        if not isinstance(VBox, MetaHasTraits):
+
+            return
+
         self.name = name
 
         if default_value:
@@ -50,6 +69,10 @@ class ParamSetterWidget(VBox):
 class Custom1(VBox):
     
     def __init__(self):
+
+        if not isinstance(VBox, MetaHasTraits):
+
+            return
 
         self.name = 'custom1'
         
@@ -135,6 +158,10 @@ class ParamTextWidget(VBox):
     
     def __init__(self, name, example=None, optional=False, widget=None):
 
+        if not isinstance(VBox, MetaHasTraits):
+
+            return
+
         self.name = name
         
         style = style = {'description_width': 'initial'}
@@ -164,3 +191,4 @@ class ParamTextWidget(VBox):
     def get_value(self):
         
         return self.widget.value
+

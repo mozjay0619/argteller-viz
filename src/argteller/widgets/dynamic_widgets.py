@@ -1,18 +1,32 @@
-from IPython.display import display
-import ipywidgets as widgets
-from ipywidgets import HBox, Label, VBox
-from ipywidgets import Button, Layout, HTML
-
 from .widgets import ParamChoiceWidget
 from .widgets import Custom1
 from .widgets import ParamTextWidget
 from .widgets import ParamSetterWidget
+
+try:
+
+    from IPython.display import display
+    import ipywidgets as widgets
+    from ipywidgets import HBox, Label, VBox
+    from ipywidgets import Button, Layout, HTML
+    from traitlets import MetaHasTraits
+
+except ModuleNotFoundError:
+
+    class VBox():
+        pass
+
+    class MetaHasTraits():
+        pass
 
 
 class DynamicWidget(VBox):
     # https://stackoverflow.com/questions/60998665/is-it-possible-to-make-another-ipywidgets-widget-appear-based-on-dropdown-select
     
     def __init__(self, topic, node, widget_dicts):
+
+        if not isinstance(VBox, MetaHasTraits):
+            return
         
         self.topic = topic
         self.node = node
@@ -148,6 +162,10 @@ class DynamicWidget(VBox):
 class DynamicSwitch(VBox):
     
     def __init__(self, widget1, widget2):
+
+        if not isinstance(VBox, MetaHasTraits):
+
+            return
         
         self.widget1 = widget1
         self.widget2 = widget2
@@ -182,3 +200,4 @@ class DynamicSwitch(VBox):
             self.widget.description = "Back"
         
         self.dynamic_widget_holder.children = [new_widget]
+        

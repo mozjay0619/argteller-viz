@@ -1,18 +1,32 @@
-from IPython.display import display
-import ipywidgets as widgets
-from ipywidgets import HBox, Label, VBox
-from ipywidgets import Button, Layout, HTML
+from ..tree.tree_node import TreeNode
+from ..widgets.dynamic_widgets import DynamicWidget
+from ..widgets.dynamic_widgets import DynamicSwitch
+
+try:
+
+    from IPython.display import display
+    import ipywidgets as widgets
+    from ipywidgets import HBox, Label, VBox
+    from ipywidgets import Button, Layout, HTML
+
+    module_found = True
+
+except ModuleNotFoundError:
+
+    module_found = False
 
 from collections import defaultdict
 
-from ..tree.tree_node import TreeNode
-
-from ..widgets.dynamic_widgets import DynamicWidget
-from ..widgets.dynamic_widgets import DynamicSwitch
 
 class AccessObject():
     
     def __init__(self, root, node_dicts):
+
+
+        self.module_found = module_found
+
+        if not self.module_found:
+            return
         
         self.root, self.node_dicts = root, node_dicts
         self.widget_dicts = defaultdict(dict)
@@ -127,20 +141,4 @@ class AccessObject():
                     
                     
             return nodes[0]
-
-    
-            
-
-
-
-        
-           
-
-
-
-
-
-
-
-
 
