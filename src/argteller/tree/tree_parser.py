@@ -29,7 +29,12 @@ def check_default(line):
     if not ':' in line:
         return line, None
     
-    line1, line2 = line.split(':')
+    try:
+        line1, line2 = line.split(':')
+
+    except:
+
+        print(line)
     
     if line2=='':
         return line1, None
