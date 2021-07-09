@@ -102,6 +102,9 @@ class ParamChoiceWidget(VBox):
                 
             elif default_value is not None:  
                 self.widget.value = str(default_value) 
+
+            else:
+                self.widget.value = None
                 
             self.initial = False
 
