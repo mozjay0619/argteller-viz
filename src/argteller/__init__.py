@@ -1,5 +1,5 @@
-from .argteller import ArgtellerClassDecorator
-from .argteller import ArgtellerMethodDecorator
+from .decorators.class_decorator import ArgtellerClassDecorator
+from .decorators.method_decorator import ArgtellerMethodDecorator
 	
 __all__ = [
 	"ArgtellerClassDecorator",

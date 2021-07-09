@@ -1,7 +1,7 @@
-from .tree.tree_parser import parse_dsl
-from .tree.tree_builder import construct_tree
-from .builder.access_object import AccessObject
-from .builder.get_control_panel import get_control_panel
+from ..tree.tree_parser import parse_dsl
+from ..tree.tree_builder import construct_tree
+from ..builder.access_object import AccessObject
+from ..builder.get_control_panel import get_control_panel
 
 try:
     
@@ -13,7 +13,6 @@ except ModuleNotFoundError:
 
 import inspect
 import os
-import functools
 import warnings
 
 
@@ -152,50 +151,20 @@ class ArgtellerClassDecorator():
                     raise TypeError("__init__() missing {} required positional arguments: {} !".format(
                         len(missing_pos_args), missing_args))
 
-            def __getattr__(cls_self, elem):
+            def __getattr__(cls_self, param):
                 """This magic method is invoked when the __getattribute__ 
                 magic method throws an exception. This is a natural way to
                 query the widgets when the user has not supplied a required
                 argument, or when the user queries for a parameter that is 
                 not specified in the original signature.
                 """
-                if cls_self.__access_object__.module_found and elem in cls_self.__access_object__.get_params():
+                if cls_self.__access_object__.module_found and param in cls_self.__access_object__.get_params():
 
-                    try:
-                        value = cls_self.__access_object__.get_value(elem, cls_self.topic)
-                    except TypeError as e:
-                        raise TypeError(str(e) + ' Invoke  obj.__settopic__(topic) method to set topic. Invoke obj.__resettopic__() to reset it.')
-
-
-                    if value is None:
-                        return value
-
-                    try:    
-                        value = int(value)
-                        return value
-                    except ValueError:
-                        pass
-                    
-                    try:
-                        value = float(value)
-                        return value
-                    except ValueError:
-                        pass
-                    
-                    try:
-                        value = eval(value)
-                        return value
-                    except (SyntaxError, NameError):
-                        pass
-
-                    if value=='':
-                        return None
-                    
-                    return value
+                    return cls_self.__getvalue__(param)
 
                 else:
                     
-                    raise AttributeError("'{}' object has no attribute '{}'!".format(cls.__name__, elem))
+                    raise AttributeError("'{}' object has no attribute '{}'!".format(cls.__name__, param))
                 
             def __settopic__(cls_self, topic):
                 
@@ -210,109 +179,41 @@ class ArgtellerClassDecorator():
                 return cls_self.__access_object__.get_params(cls_self.topic)
 
             def __getvalue__(cls_self, param):
+                """The return values will be automatically typecasted. 
 
-                return cls_self.__access_object__.get_value(param, cls_self.topic)
+                '' from Text widget will be None
+                int castable values will be casted to int
+                float castable values will be casted to float (assuming it was not int)
+                """
+                try:
+                    value = cls_self.__access_object__.get_value(param, cls_self.topic)
+                except TypeError as e:
+                    raise TypeError(str(e) + ' Invoke  obj.__settopic__(topic) method to set topic. Invoke obj.__resettopic__() to reset it.')
+
+                if value is None:
+                    return value
+
+                try:    
+                    value = int(value)
+                    return value
+                except ValueError:
+                    pass
+                
+                try:
+                    value = float(value)
+                    return value
+                except ValueError:
+                    pass
+                
+                try:
+                    value = eval(value)
+                    return value
+                except (SyntaxError, NameError):
+                    pass
+
+                if value=='':
+                    return None
+                
+                return value
 
         return Wrapped
-
-def ArgtellerMethodDecorator(source_name, topic=None):
-    
-    def decorator(func):
-
-        @functools.wraps(func)
-        def wrapper(self, *args, **kwargs):
-            
-            original_signature = inspect.signature(func)
-            
-            new_args = [self]
-    
-            params = list(original_signature.parameters.values())
-            
-            has_VAR_POSITIONAL = inspect.Parameter.VAR_POSITIONAL in [param.kind for param in params]
-            has_VAR_KEYWORD = inspect.Parameter.VAR_KEYWORD in [param.kind for param in params]
-        
-            
-            if source_name in kwargs:
-                
-                __source_obj__ = kwargs[source_name]
-                
-                __source_obj__.__settopic__(topic)
-                
-                del kwargs[source_name]
-                
-            else:
-                
-                __source_obj__ = None
-
-            missing_positional_arguments = []
-            
-            num_hard_pos = 0
-            num_pos = 0
-                
-            for i, param in enumerate(params):      
-                
-                if i==0:  # Skip the implicit self argument.
-                    continue
- 
-                if param.kind==inspect.Parameter.POSITIONAL_OR_KEYWORD:
-                    
-                    # Keep track of the number of positional arguments to check
-                    # excessive argument input error.
-                    if param.default==inspect._empty:
-                        num_hard_pos += 1
-                    num_pos += 1
-                    
-                    # We can assume that the first args belong to the
-                    # position argument list.
-                    if len(args)>=i:
-                        
-                        new_args.append(args[i-1])
-                    
-                    elif param.name in kwargs:
-                        
-                        new_args.append(kwargs[param.name])
-                        del kwargs[param.name]
-                        
-                    else:
-                        
-                        if __source_obj__ is not None:
-                        
-                            if param.name in __source_obj__.__getparams__():
-
-                                new_args.append(__source_obj__.__getvalue__(param.name))
-
-                        else:
-                            
-                            if param.default==inspect._empty:
-                                
-                                missing_positional_arguments.append("'{}'".format(param.name))
-                            
-                            new_args.append(param.default)
-                            
-            if not has_VAR_POSITIONAL and num_pos < len(args):
-                
-                # Add 1 for the implicit self argument.
-                if num_hard_pos > 0:
-                    
-                    raise TypeError("__init__() takes {} positional arguments but {} were given".format(
-                        num_pos+1, len(args)+1))
-                    
-                else:
-                    
-                    raise TypeError("__init__() takes from {} to {} positional arguments but {} were given".format(
-                        num_hard_pos+1, num_pos+1, len(args)+1))
-
-            if len(missing_positional_arguments) > 0:
-
-                missing_args = " and ".join(missing_positional_arguments)
-
-                raise TypeError("__init__() missing {} required positional arguments: {} !".format(len(missing_positional_arguments), missing_args))
-                        
-            cr = func(*new_args, **kwargs) # call original function
-
-            return cr
-
-        return wrapper
-    
-    return decorator
-
