@@ -178,7 +178,7 @@ class ArgtellerClassDecorator():
                     try:
                         value = eval(value)
                         return value
-                    except NameError:
+                    except (SyntaxError, NameError):
                         pass
                     
                     return value
