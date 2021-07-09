@@ -163,6 +163,9 @@ class ArgtellerClassDecorator():
 
                     value = cls_self.__access_object__.get_value(elem, cls_self.topic)
 
+                    if value is None:
+                        return value
+
                     try:    
                         value = int(value)
                         return value
@@ -180,6 +183,9 @@ class ArgtellerClassDecorator():
                         return value
                     except (SyntaxError, NameError):
                         pass
+
+                    if value=='':
+                        return None
                     
                     return value
 
