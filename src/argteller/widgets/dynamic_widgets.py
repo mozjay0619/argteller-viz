@@ -186,19 +186,25 @@ class DynamicWidget(VBox):
         
         input_value = widg['new']
 
-        print('asdfasdfasdfasdfasdf', input_value)
+        # print('asdfasdfasdfasdfasdf', input_value)
         
         child_node = self.node.get_child_by_name(input_value)
 
-        print(child_node)
+        # print(child_node)
 
         new_widgets = []
         
         for child_node in self.node.children:
+
+            print(child_node)
             
             if child_node.name==input_value and (child_node.secondary_type=='param' or child_node.secondary_type=='param_setter'):
+
+                print(child_node.name)
                 
                 for _child_node in child_node.children:
+
+                    print(_child_node)
                 
                     widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event)
                     new_widgets.append(widget)
