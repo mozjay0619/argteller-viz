@@ -110,9 +110,14 @@ def parse_dsl(dsl):
             # think it has shallower param induced from it
             secondary_type = check_type(line)
 
-        name = re.sub('^[\s=+-?#0-9]+', '', prev_line)
+        if primary_type!='string_sample': 
+            name = re.sub('^[\s=+-?#0-9]+', '', prev_line)
 
-        name, default_value = check_default(name)
+            name, default_value = check_default(name)
+        else:
+            name = re.sub('^[\s=]+', '', prev_line)
+
+            default_value = None
         
         if (primary_type=='param' or primary_type=='optional') and secondary_type is None:
             secondary_type = 'string'
