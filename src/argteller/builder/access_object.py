@@ -16,12 +16,14 @@ except ModuleNotFoundError:
     module_found = False
 
 from collections import defaultdict
+from threading import Event
 
 
 class AccessObject():
     
     def __init__(self, root, node_dicts):
 
+        initial_event = Event()
 
         self.module_found = module_found
 
@@ -38,13 +40,15 @@ class AccessObject():
 
             for param in topic.children:
 
-                param_widget = DynamicWidget(topic.name, param, self.widget_dicts)
+                param_widget = DynamicWidget(topic.name, param, self.widget_dicts, initial_event)
 
                 param_widgets.append(param_widget)
 
             param_vbox = VBox(param_widgets)
 
             self.param_vboxes[topic.name] = param_vbox
+
+        initial_event.set()
 
     def get_topics(self):
     

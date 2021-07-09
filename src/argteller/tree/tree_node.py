@@ -1,10 +1,11 @@
 class TreeNode():
     
-    def __init__(self, depth, name, default_value, primary_type, secondary_type=None):
+    def __init__(self, depth, name, default_value, primary_type, secondary_type=None, preset_value=None):
         
         self.depth = depth
         self.name = name
         self.default_value = default_value
+        self.preset_value = preset_value
         
         self.primary_type = primary_type
         self.secondary_type = secondary_type

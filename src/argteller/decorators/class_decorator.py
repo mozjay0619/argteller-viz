@@ -18,7 +18,7 @@ import warnings
 
 class ArgtellerClassDecorator():
     
-    def __init__(self, dsl, override=False):
+    def __init__(self, dsl, presetter=None, override=False):
         
         if os.path.exists(dsl):
             with open(dsl) as f:
@@ -28,6 +28,7 @@ class ArgtellerClassDecorator():
             self.dsl = dsl
             
         self.override = override
+        self.presetter = presetter
         
     def __call__(self, cls):
         
@@ -112,7 +113,7 @@ class ArgtellerClassDecorator():
                 # So instead, we will rely on the requirement signals of the widgets.
 
                 parsed_node_data = parse_dsl(self.dsl)
-                root, node_dicts = construct_tree(parsed_node_data)
+                root, node_dicts, value_dicts = construct_tree(parsed_node_data)
                 cls_self.__access_object__ = AccessObject(root, node_dicts)
 
                 if cls_self.__access_object__.module_found:
@@ -217,3 +218,4 @@ class ArgtellerClassDecorator():
                 return value
 
         return Wrapped
+
