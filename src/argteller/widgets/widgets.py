@@ -17,9 +17,7 @@ except ModuleNotFoundError:
 
 class ParamTextWidget(VBox):
     
-    def __init__(self, name, example=None, default_value=None, preset_value=None, optional=False, widget=None, initial_event=None):
-
-        # print(name, preset_value, 'asdfasdf')
+    def __init__(self, name, example=None, default_value=None, preset_value=None, optional=False, widget=None, initial_event=None, param_setter_event=None):
 
         if not isinstance(VBox, MetaHasTraits):
 
@@ -29,6 +27,7 @@ class ParamTextWidget(VBox):
 
         self.initial = True
         self.initial_event = initial_event
+        self.param_setter_event = param_setter_event
         
         style = style = {'description_width': 'initial'}
         layout = Layout(display='flex', 
@@ -53,9 +52,7 @@ class ParamTextWidget(VBox):
             else:
                 self.widget = widgets.Text(description='E.g. {}: '.format(example), style=style, layout=layout)
 
-
-
-        if self.initial and not self.initial_event.isSet():  # So that user input is not overwritten every time.
+        if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
                 self.widget.value = str(preset_value) 
@@ -73,12 +70,9 @@ class ParamTextWidget(VBox):
         return self.widget.value
 
 
-
 class ParamChoiceWidget(VBox):
     
-    def __init__(self, name, options, default_value=None, preset_value=None, optional=False, widget=None, initial_event=None):
-
-        # print(name, preset_value)
+    def __init__(self, name, options, default_value=None, preset_value=None, optional=False, widget=None, initial_event=None, param_setter_event=None):
 
         if not isinstance(VBox, MetaHasTraits):
             return
@@ -87,6 +81,7 @@ class ParamChoiceWidget(VBox):
         
         self.initial = True
         self.initial_event = initial_event
+        self.param_setter_event = param_setter_event
         
         if preset_value:
             label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
@@ -100,7 +95,7 @@ class ParamChoiceWidget(VBox):
         else:
             self.widget = widgets.RadioButtons(options=options, disabled=False)
 
-        if self.initial and not self.initial_event.isSet():  # So that user input is not overwritten every time.
+        if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
                 self.widget.value = str(preset_value) 
@@ -119,11 +114,9 @@ class ParamChoiceWidget(VBox):
 
 class ParamSetterWidget(VBox):
 
-    def __init__(self, name, widget, default_value=None, preset_value=None, initial_event=None):
+    def __init__(self, name, widget, default_value=None, preset_value=None, initial_event=None, param_setter_event=None):
 
-
-        # print(name, preset_value)
-
+        # this widget already exists
 
         if not isinstance(VBox, MetaHasTraits):
 
@@ -133,7 +126,10 @@ class ParamSetterWidget(VBox):
 
         self.initial = True
         self.initial_event = initial_event
+        self.param_setter_event = param_setter_event
 
+        # This is just label for this widget. The values are actually being
+        # set on different widgets.
         if default_value:
             label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
         else:
@@ -141,7 +137,7 @@ class ParamSetterWidget(VBox):
 
         self.widget = widget
 
-        if self.initial and not self.initial_event.isSet():  # So that user input is not overwritten every time.
+        if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
                 self.widget.value = str(preset_value) 
@@ -151,6 +147,7 @@ class ParamSetterWidget(VBox):
                 
             self.initial = False
 
+      
         children = [label, self.widget]
         super().__init__(children=children)
 

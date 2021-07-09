@@ -23,12 +23,15 @@ except ModuleNotFoundError:
 class DynamicWidget(VBox):
     # https://stackoverflow.com/questions/60998665/is-it-possible-to-make-another-ipywidgets-widget-appear-based-on-dropdown-select
     
-    def __init__(self, topic, node, widget_dicts, initial_event):
+    def __init__(self, topic, node, widget_dicts, initial_event, param_setter_event):
 
         if not isinstance(VBox, MetaHasTraits):
             return
         
         self.initial_event = initial_event
+
+        self.currently_param_setter = False
+        self.param_setter_event = param_setter_event
 
         self.topic = topic
         self.node = node
@@ -63,7 +66,8 @@ class DynamicWidget(VBox):
                         default_value=default_value, 
                         preset_value=preset_value, 
                         optional=is_optional_param,
-                        initial_event=self.initial_event)
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                    
@@ -79,7 +83,8 @@ class DynamicWidget(VBox):
                         preset_value=preset_value,
                         optional=is_optional_param, 
                         widget=widget,
-                        initial_event=self.initial_event)
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
 
                 else:
                 
@@ -88,7 +93,8 @@ class DynamicWidget(VBox):
                         default_value=default_value,
                         preset_value=preset_value,
                         optional=is_optional_param,
-                        initial_event=self.initial_event)
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                    
@@ -108,7 +114,8 @@ class DynamicWidget(VBox):
                         example=string_sample, 
                         default_value=default_value,
                         preset_value=preset_value,
-                        initial_event=self.initial_event)
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                 
@@ -122,18 +129,24 @@ class DynamicWidget(VBox):
 
             topic, node_name = node.name.split('/')
 
-            # print(topic, node_name)
-            # print(self.widget_dicts[topic])
+            # node_name is some node that already exists in some other topic
 
             widget = self.widget_dicts[topic][node_name]
+
+            # recall that widget that already exists
+
+            self.param_setter_event.set()  # set the event here so that the param setter widget can use it
 
             self.widget = ParamSetterWidget(
                 name=self.node.name, 
                 widget=widget, 
                 default_value=self.node.default_value,
                 preset_value=preset_value,
-                initial_event=self.initial_event)
-        
+                initial_event=self.initial_event,
+                param_setter_event=self.param_setter_event)
+
+            self.currently_param_setter = True
+            
         self.dynamic_widget_holder = VBox()
         
         children = [
@@ -168,7 +181,7 @@ class DynamicWidget(VBox):
                     
                     for _child_node in child_node.children:
                     
-                        widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event)
+                        widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
                         new_widgets.append(widget)
             
             self.dynamic_widget_holder.children = tuple(new_widgets)
@@ -184,35 +197,36 @@ class DynamicWidget(VBox):
         # look at the choice param value1, and see if that has any children
         # then loop over those children and add them all to the new_widgets
         
-        input_value = widg['new']
-
-        # print('asdfasdfasdfasdfasdf', input_value)
+        input_value = widg['new']  # The picked option for choice param
         
         child_node = self.node.get_child_by_name(input_value)
-
-        # print(child_node)
 
         new_widgets = []
         
         for child_node in self.node.children:
 
-            print(child_node, '1')
+            # Since this is choice param, child_nodes are all options
             
             if child_node.name==input_value and (child_node.secondary_type=='param' or child_node.secondary_type=='param_setter'):
 
-                print(child_node.name, '2')
+                # If the child_node.name == option 
+                # and if that child_node (option) is "branching", 
                 
                 for _child_node in child_node.children:
 
-                    print(_child_node, '3')
-                
-                    widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event)
+                    # the children of that child_node are all param or param_setters
+
+                    # if _child_node is param setter, 
+                    
+                    # create new dynamicwidgets for each of those
+                    widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
                     new_widgets.append(widget)
         
         self.dynamic_widget_holder.children = tuple(new_widgets)
 
-    # def get_param_names(self):
-        
+        if self.currently_param_setter:
+            self.param_setter_event.clear()
+
     def set_input(self, key, value):
          
         self.recur(self, key, value)

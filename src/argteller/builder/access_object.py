@@ -24,6 +24,7 @@ class AccessObject():
     def __init__(self, root, node_dicts):
 
         initial_event = Event()
+        param_setter_event = Event()
 
         self.module_found = module_found
 
@@ -40,7 +41,7 @@ class AccessObject():
 
             for param in topic.children:
 
-                param_widget = DynamicWidget(topic.name, param, self.widget_dicts, initial_event)
+                param_widget = DynamicWidget(topic.name, param, self.widget_dicts, initial_event, param_setter_event)
 
                 param_widgets.append(param_widget)
 
