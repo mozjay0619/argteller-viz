@@ -1,6 +1,6 @@
 import pytest
 
-from argteller.argteller import ArgtellerClassDecorator
+from argteller.decorators.class_decorator import ArgtellerClassDecorator
 
 
 def test_contains_return_statement():
