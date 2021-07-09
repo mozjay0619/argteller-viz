@@ -23,26 +23,36 @@ except ModuleNotFoundError:
 class DynamicWidget(VBox):
     # https://stackoverflow.com/questions/60998665/is-it-possible-to-make-another-ipywidgets-widget-appear-based-on-dropdown-select
     
-    def __init__(self, topic, node, widget_dicts):
+    def __init__(self, topic, node, widget_dicts, initial_event, param_setter_event):
 
         if not isinstance(VBox, MetaHasTraits):
             return
         
+        self.initial_event = initial_event
+
+        self.currently_param_setter = False
+        self.param_setter_event = param_setter_event
+
         self.topic = topic
         self.node = node
         
         self.widget_dicts = widget_dicts
 
+        default_value = None
+        preset_value = None
+
         if node.primary_type=='param' or node.primary_type=='optional':
 
             is_optional_param = node.primary_type=='optional'
+
+            # Set aside the default and preset values
+            default_value = node.default_value
+            preset_value = node.preset_value
 
             # if choiceable param, add choices here
             if node.secondary_type=='option':
                 
                 options = node.get_children_names() 
-
-                default_value = node.default_value
 
                 if self.node.name in self.widget_dicts[self.topic]:
 
@@ -50,7 +60,14 @@ class DynamicWidget(VBox):
 
                 else:
                     
-                    self.widget = ParamChoiceWidget(self.node.name, options, default_value, optional=is_optional_param)
+                    self.widget = ParamChoiceWidget(
+                        name=self.node.name, 
+                        options=options, 
+                        default_value=default_value, 
+                        preset_value=preset_value, 
+                        optional=is_optional_param,
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                    
@@ -60,11 +77,24 @@ class DynamicWidget(VBox):
 
                     widget = self.widget_dicts[self.topic][self.node.name]
 
-                    self.widget = ParamTextWidget(self.node.name, optional=is_optional_param, widget=widget)
+                    self.widget = ParamTextWidget(
+                        name=self.node.name, 
+                        default_value=default_value,
+                        preset_value=preset_value,
+                        optional=is_optional_param, 
+                        widget=widget,
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
 
                 else:
                 
-                    self.widget = ParamTextWidget(self.node.name, optional=is_optional_param)
+                    self.widget = ParamTextWidget(
+                        name=self.node.name, 
+                        default_value=default_value,
+                        preset_value=preset_value,
+                        optional=is_optional_param,
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                    
@@ -79,7 +109,13 @@ class DynamicWidget(VBox):
                     string_sample_node = node.children[0]
                     string_sample = string_sample_node.name
                     
-                    self.widget = ParamTextWidget(self.node.name, string_sample)
+                    self.widget = ParamTextWidget(
+                        name=self.node.name, 
+                        example=string_sample, 
+                        default_value=default_value,
+                        preset_value=preset_value,
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                 
@@ -93,10 +129,24 @@ class DynamicWidget(VBox):
 
             topic, node_name = node.name.split('/')
 
+            # node_name is some node that already exists in some other topic
+
             widget = self.widget_dicts[topic][node_name]
 
-            self.widget = ParamSetterWidget(self.node.name, widget, self.node.default_value)
-        
+            # recall that widget that already exists
+
+            self.param_setter_event.set()  # set the event here so that the param setter widget can use it
+
+            self.widget = ParamSetterWidget(
+                name=self.node.name, 
+                widget=widget, 
+                default_value=self.node.default_value,
+                preset_value=preset_value,
+                initial_event=self.initial_event,
+                param_setter_event=self.param_setter_event)
+
+            self.currently_param_setter = True
+            
         self.dynamic_widget_holder = VBox()
         
         children = [
@@ -105,9 +155,37 @@ class DynamicWidget(VBox):
         ]
         
         self.widget.children[1].observe(self._add_widgets, names=['value'])
-        
+
         super().__init__(children=children)
-        
+
+        # Manually trigger the children widget node initialization if there
+        # is default or preset value
+        if (node.primary_type=='param' or node.primary_type=='optional') and (default_value or preset_value) and not self.initial_event.isSet():
+
+            child_node = self.node.get_child_by_name(preset_value)
+
+            new_widgets = []
+            
+            for child_node in self.node.children:
+
+                # This is so that if the default value and preset value were different,
+                # the widgets do not follow down both of the branches.
+                if preset_value is not None:
+                    checked_value = preset_value
+                elif default_value is not None:
+                    checked_value = default_value
+                else:
+                    checked_value = None
+                
+                if child_node.name==checked_value and (child_node.secondary_type=='param' or child_node.secondary_type=='param_setter'):
+                    
+                    for _child_node in child_node.children:
+                    
+                        widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
+                        new_widgets.append(widget)
+            
+            self.dynamic_widget_holder.children = tuple(new_widgets)
+
     def _add_widgets(self, widg):
         
         # if node is choiceable param
@@ -119,25 +197,36 @@ class DynamicWidget(VBox):
         # look at the choice param value1, and see if that has any children
         # then loop over those children and add them all to the new_widgets
         
-        input_value = widg['new']
+        input_value = widg['new']  # The picked option for choice param
         
         child_node = self.node.get_child_by_name(input_value)
 
         new_widgets = []
         
         for child_node in self.node.children:
+
+            # Since this is choice param, child_nodes are all options
             
-            if child_node.name == input_value and (child_node.secondary_type=='param' or child_node.secondary_type=='param_setter'):
+            if child_node.name==input_value and (child_node.secondary_type=='param' or child_node.secondary_type=='param_setter'):
+
+                # If the child_node.name == option 
+                # and if that child_node (option) is "branching", 
                 
                 for _child_node in child_node.children:
-                
-                    widget = DynamicWidget(self.topic, _child_node, self.widget_dicts)
+
+                    # the children of that child_node are all param or param_setters
+
+                    # if _child_node is param setter, 
+                    
+                    # create new dynamicwidgets for each of those
+                    widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
                     new_widgets.append(widget)
         
         self.dynamic_widget_holder.children = tuple(new_widgets)
 
-    # def get_param_names(self):
-        
+        if self.currently_param_setter:
+            self.param_setter_event.clear()
+
     def set_input(self, key, value):
          
         self.recur(self, key, value)

@@ -1,5 +1,6 @@
 from ..tree.tree_parser import parse_dsl
 from ..tree.tree_builder import construct_tree
+from ..tree.tree_builder import merge_with_preset_tree
 from ..builder.access_object import AccessObject
 from ..builder.get_control_panel import get_control_panel
 
@@ -36,6 +37,8 @@ class ArgtellerClassDecorator():
             def __init__(cls_self, *args, **kwargs):
                 
                 source_obj_dict = {}
+
+                preset_dsl = None
                 
                 # The signature of the class being decorated.
                 original_signature = inspect.signature(cls.__init__)
@@ -54,8 +57,12 @@ class ArgtellerClassDecorator():
                 if not inspect.Parameter.VAR_KEYWORD in param_types:
                     
                     for key, value in kwargs.items():
+
+                        if key=='__dsl__':
+                            # But if that key is __dsl__, forgive that.
+                            pass
                     
-                        if not key in param_names:
+                        elif not key in param_names:
 
                             raise TypeError("__init__() got an unexpected keyword argument '{}'".format(
                                 key))
@@ -111,8 +118,20 @@ class ArgtellerClassDecorator():
                 # user to interact with the widget. 
                 # So instead, we will rely on the requirement signals of the widgets.
 
+                
+
                 parsed_node_data = parse_dsl(self.dsl)
-                root, node_dicts = construct_tree(parsed_node_data)
+                root, node_dicts, value_dicts = construct_tree(parsed_node_data)
+
+                if '__dsl__' in kwargs:
+
+                    parsed_node_preset_data = parse_dsl(kwargs['__dsl__'])
+                    preset_root, preset_node_dicts, preset_value_dicts = construct_tree(parsed_node_preset_data)
+
+                    del kwargs['__dsl__']
+
+                    merge_with_preset_tree(root, preset_value_dicts)
+
                 cls_self.__access_object__ = AccessObject(root, node_dicts)
 
                 if cls_self.__access_object__.module_found:
@@ -217,3 +236,4 @@ class ArgtellerClassDecorator():
                 return value
 
         return Wrapped
+
