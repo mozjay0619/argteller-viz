@@ -161,7 +161,11 @@ class ArgtellerClassDecorator():
                 """
                 if cls_self.__access_object__.module_found and elem in cls_self.__access_object__.get_params():
 
-                    value = cls_self.__access_object__.get_value(elem, cls_self.topic)
+                    try:
+                        value = cls_self.__access_object__.get_value(elem, cls_self.topic)
+                    except TypeError as e:
+                        raise TypeError(str(e) + ' Invoke  obj.__settopic__(topic) method to set topic. Invoke obj.__resettopic__() to reset it.')
+
 
                     if value is None:
                         return value
