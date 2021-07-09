@@ -95,6 +95,8 @@ def ArgtellerMethodDecorator(source_name, topic=None):
                         
             cr = func(*new_args, **kwargs) # call original function
 
+            __source_obj__.__resettopic__()  # release the topic binding
+
             return cr
 
         return wrapper
