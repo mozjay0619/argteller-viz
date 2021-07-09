@@ -110,8 +110,6 @@ def parse_dsl(dsl):
             # think it has shallower param induced from it
             secondary_type = check_type(line)
 
-        print(primary_type, prev_line)
-
         if primary_type!='string_sample': 
             name = re.sub('^[\s=+-?#0-9]+', '', prev_line)
 
