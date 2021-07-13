@@ -33,6 +33,8 @@ class VerifyVersionCommand(install):
 #     'IPython'
 #     ]
 
+1/0
+
 setuptools.setup(
     name="argteller-viz",
     version=VERSION,
