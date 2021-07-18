@@ -31,11 +31,20 @@ class ParamTextWidget(VBox):
         
         style = style = {'description_width': 'initial'}
         layout = Layout(display='flex', 
-                        flex_flow='column', 
-                        align_items='flex-start', 
-                        border=None, 
+                        flex_flow='row', 
+                        flex_basis='auto',
+                        align_content='stretch', 
+                        justify_content='center',
+                        # align_items='baseline stretch',
                         width='50%',
-                        align_content='flex-start')
+                        height='50px',
+                        flex_wrap='wrap',
+                        border=None,
+                        # flex_basis='200%'
+                        )
+
+
+        
         
         if preset_value:
             label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
@@ -43,22 +52,33 @@ class ParamTextWidget(VBox):
             label = widgets.HTML(f"<b><font size=2 color='grey'>{self.name}</b>")
         else:
             label = widgets.HTML(f"<b><font size=2 color='black'>{self.name}</b>")
+
+        # if example is not None:
+
+        #     example_label = widgets.Label(value='E.g. {}: '.format(example))
+
+        #     label = VBox([label, example_label])
         
         if widget:
-            self.widget = widget
+            self.widget = widget#VBox([widget])
         else:
             if example is None:
-                self.widget = widgets.Text(style=style, layout=layout)
+                self.widget = VBox([widgets.Text(style=style, layout=layout)])
             else:
-                self.widget = widgets.Text(description='E.g. {}: '.format(example), style=style, layout=layout)
+                self.widget = VBox([
+                    widgets.Label(value='E.g. {}: '.format(example)),
+                    widgets.Text(style=style, layout=layout)])
+
+
+
 
         if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
-                self.widget.value = str(preset_value) 
+                self.widget.children[-1].value = str(preset_value) 
                 
             elif default_value is not None:  
-                self.widget.value = str(default_value) 
+                self.widget.children[-1].value = str(default_value) 
                 
             self.initial = False
         
@@ -67,7 +87,7 @@ class ParamTextWidget(VBox):
         
     def get_value(self):
         
-        return self.widget.value
+        return self.widget.children[-1].value
 
 
 class ParamChoiceWidget(VBox):
@@ -91,9 +111,9 @@ class ParamChoiceWidget(VBox):
             label = widgets.HTML(f"<b><font size=2 color='black'>{self.name}</b>")
 
         if widget:
-            self.widget = widget
+            self.widget = widget#VBox([widget])
         else:
-            self.widget = widgets.RadioButtons(options=options, disabled=False)
+            self.widget =  VBox([widgets.RadioButtons(options=options, disabled=False)])
 
         if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
@@ -113,7 +133,7 @@ class ParamChoiceWidget(VBox):
         
     def get_value(self):
         
-        return self.widget.value
+        return self.widget.children[-1].value
 
 class ParamSetterWidget(VBox):
 

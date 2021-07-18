@@ -56,7 +56,17 @@ class DynamicWidget(VBox):
 
                 if self.node.name in self.widget_dicts[self.topic]:
 
-                    self.widget = self.widget_dicts[self.topic][self.node.name]
+                    widget = self.widget_dicts[self.topic][self.node.name]
+
+                    self.widget = ParamChoiceWidget(
+                        name=self.node.name, 
+                        options=options, 
+                        default_value=default_value, 
+                        preset_value=preset_value, 
+                        widget=widget,
+                        optional=is_optional_param,
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
 
                 else:
                     
@@ -102,7 +112,16 @@ class DynamicWidget(VBox):
 
                 if self.node.name in self.widget_dicts[self.topic]:
 
-                    self.widget = self.widget_dicts[self.topic][self.node.name]
+                    widget = self.widget_dicts[self.topic][self.node.name]
+
+                    self.widget = ParamTextWidget(
+                        name=self.node.name, 
+                        default_value=default_value,
+                        preset_value=preset_value,
+                        optional=is_optional_param, 
+                        widget=widget,
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
 
                 else:
                 
@@ -153,8 +172,11 @@ class DynamicWidget(VBox):
             self.widget, 
             self.dynamic_widget_holder
         ]
+
+        # print(self.widget)
         
-        self.widget.children[1].observe(self._add_widgets, names=['value'])
+        
+        self.widget.children[1].children[-1].observe(self._add_widgets, names=['value'])
 
         super().__init__(children=children)
 
@@ -183,6 +205,8 @@ class DynamicWidget(VBox):
                     
                         widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
                         new_widgets.append(widget)
+
+            print(new_widgets)
             
             self.dynamic_widget_holder.children = tuple(new_widgets)
 
@@ -196,16 +220,16 @@ class DynamicWidget(VBox):
         
         # look at the choice param value1, and see if that has any children
         # then loop over those children and add them all to the new_widgets
-        
+
         input_value = widg['new']  # The picked option for choice param
-        
+
+        # print(input_value)
+
         child_node = self.node.get_child_by_name(input_value)
 
         new_widgets = []
         
-        for child_node in self.node.children:
-
-            # Since this is choice param, child_nodes are all options
+        for child_node in self.node.children:  # Since this is choice param, child_nodes are all options
             
             if child_node.name==input_value and (child_node.secondary_type=='param' or child_node.secondary_type=='param_setter'):
 
@@ -216,7 +240,7 @@ class DynamicWidget(VBox):
 
                     # the children of that child_node are all param or param_setters
 
-                    # if _child_node is param setter, 
+                    # if _child_node is param setter,
                     
                     # create new dynamicwidgets for each of those
                     widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
@@ -246,6 +270,143 @@ class DynamicWidget(VBox):
         for child in node.children:
 
             self.recur(child, key, value)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class DynamicSwitch(VBox):
