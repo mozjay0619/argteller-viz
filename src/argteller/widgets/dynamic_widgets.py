@@ -223,7 +223,7 @@ class DynamicWidget(VBox):
 
         input_value = widg['new']  # The picked option for choice param
 
-        # print(input_value)
+        print('asdfasdfasdf')
 
         child_node = self.node.get_child_by_name(input_value)
 
