@@ -42,39 +42,34 @@ class ArgtellerClassDecorator():
             
             def __init__(cls_self, *args, **kwargs):
 
-
-                # dsl = cls_self.__loadtmpdsl__()
-                # print(dsl)
-
-
                 args = list(args)
 
                 parsed_node_data = parse_dsl(self.dsl)
                 root, node_dicts, value_dicts = construct_tree(parsed_node_data)
 
                 # Instantiate the temporary AccessObject to check the keyword arguments.
-                access_object = AccessObject(root, node_dicts)
+                temp_access_object = AccessObject(root, node_dicts)
 
                 # Instantiate the AccessObject early so that we can
                 # 1) catch the unexpected keyword arguments without having to cache them, and
                 # 2) directly feed in the relevant POSITIONAL_OR_KEYWORD into the preset tree.
 
 
-                # The signature of the class being decorated.
+                # The original signature of the class being decorated.
                 original_signature = inspect.signature(cls.__init__)
                 
                 params = list(original_signature.parameters.values())
                 
                 param_names = [param.name for param in params]  # The names of the params found in signature
-                param_types = [param.kind for param in params]
+                param_types = [param.kind for param in params]  # The parameter types
                 
                 # Because the inner __init__ method signature only consists
                 # of VAR_POSITIONAL and VAR_KEYWORD type parameter, we need
                 # to check manually.
 
                 
-                # If **kwargs is not in the original_signature,
-                # we cannot accept kwargs not in the param_names.
+                # If VAR_KEYWORD type parameter (e.g. **kwargs) is not in the original_signature,
+                # we cannot accept kwargs not in the param_names or not in the access_object.
                 if not inspect.Parameter.VAR_KEYWORD in param_types:
                     
                     for key, value in kwargs.items():
@@ -85,14 +80,11 @@ class ArgtellerClassDecorator():
                     
                         elif not key in param_names:
 
-                            if access_object.node_exists(key):
-
-                                # If the key exists in the param list
-
+                            if temp_access_object.node_exists(key):
+                                # If the key exists in the param list, forgive that.
                                 pass
 
                             else:
-
                                 raise TypeError("__init__() got an unexpected keyword argument '{}'!".format(
                                     key))
                 
@@ -110,26 +102,24 @@ class ArgtellerClassDecorator():
                 #             num_pos_or_kw, len(args) + 1))  # +1 to count for the implicit self argument
                 
     
-                preset_dict = dict()
+                signature_arg_preset_dict = dict()
 
 
 
 
 
-                # Check the user passed arguments at the __init__ method invocation.
+                # Inspect the user passed arguments at the __init__ method invocation.
                 check_pos_args = []
                 
                 for i, param in enumerate(params):
                     
                     if i==0:  # Skip the implicit "self" argument.
-                        
                         continue
                     
                     # The parameter in signature is "named"
                     if param.kind==inspect.Parameter.POSITIONAL_OR_KEYWORD:   
                         
                         if len(args)>=i:
-                            
 
                             arg_value = args[i-1]
 
@@ -149,7 +139,7 @@ class ArgtellerClassDecorator():
                             # If we find a unsupplied named arg, we check if there is a chance
                             # it will be supplied by the tree
 
-                                if access_object.node_exists(param.name):
+                                if temp_access_object.node_exists(param.name):
 
                                     args.append(None)
 
@@ -190,13 +180,13 @@ class ArgtellerClassDecorator():
 
                 for k, v in kwargs.items():
 
-                    if access_object.node_exists(k):
+                    if temp_access_object.node_exists(k):
 
                         in_tree.append(k)
 
                 for k in in_tree:
 
-                    preset_dict[k] = kwargs[k]
+                    signature_arg_preset_dict[k] = kwargs[k]
 
                     del kwargs[k]
 
@@ -221,9 +211,13 @@ class ArgtellerClassDecorator():
 
 
 
-                for k, v in preset_dict.items():
+                for k, v in signature_arg_preset_dict.items():
 
                     __access_object__.set_value(str(v), k)
+
+
+
+
 
 
 
@@ -288,8 +282,8 @@ class ArgtellerClassDecorator():
                 if __access_object__.module_found and param in __access_object__.get_params():
 
 
-                    topic_index = __access_object__.tab.selected_index
-                    titles = __access_object__.tab._titles
+                    topic_index = __access_object__.tab_widget.selected_index
+                    titles = __access_object__.tab_widget._titles
                     current_topic = titles[str(topic_index)]
 
                     cls_self.__setvalue__(value, param, current_topic)
@@ -353,13 +347,13 @@ class ArgtellerClassDecorator():
 
                 __access_object__.set_value(str(value), param, topic)
 
-            def __getdsl__(cls_self):
+            def get_dsl(cls_self):
 
                 return __access_object__.get_active_param_values()
 
             def __savedsl__(cls_self, filename):
 
-                dsl = cls_self.__getdsl__()
+                dsl = cls_self.get_dsl()
     
                 if not '/' in filename:
                     
@@ -379,14 +373,43 @@ class ArgtellerClassDecorator():
                 
                 return filename
 
-            def __loaddsl__(cls_self, filename):
+            def load_dsl(cls_self, inp=None):
 
-                with open(filename, "r") as f:
+                # clear out the initial event to trigger recursive widget
+                # activation
+                __access_object__.initial_event.clear()
 
-                    dsl = f.read()
+                if inp is None:
 
-                return dsl
+                    filename = __access_object__.filepath_widget.value
 
+                    with open(filename, "r") as f:
+
+                        dsl = f.read()
+
+                elif os.path.exists(inp):
+
+                    with open(inp, "r") as f:
+
+                        dsl = f.read()
+
+                else:
+
+                    dsl = inp
+
+
+                parsed_node_data = parse_dsl(dsl)
+                _, _, value_dicts = construct_tree(parsed_node_data)
+
+                for topic, param_dict in value_dicts.items():
+    
+                    for param, value in param_dict.items():
+                        
+                        
+                        __access_object__.set_value(value, param, topic)
+
+
+                __access_object__.initial_event.set()
 
             def __loadtmpdsl__(cls_self):
 
@@ -408,7 +431,7 @@ class ArgtellerClassDecorator():
             def __del__(cls_self):
 
 
-                print('bbbb')
+                
 
                 tmpdsl_filename = '__tmpdsl__.txt'.format(time.time())
                 cls_self.__savedsl__(tmpdsl_filename)
@@ -419,7 +442,7 @@ class ArgtellerClassDecorator():
                 # text_file.close()
 
 
-            def get_ao(cls_self):
+            def __access_object__(cls_self):
 
                 return __access_object__
 

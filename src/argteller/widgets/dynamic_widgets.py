@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 class DynamicWidget(VBox):
     # https://stackoverflow.com/questions/60998665/is-it-possible-to-make-another-ipywidgets-widget-appear-based-on-dropdown-select
     
-    def __init__(self, topic, node, widget_dicts, initial_event, param_setter_event):
+    def __init__(self, topic, node, widget_dicts, initial_event, param_setter_event, gui_triggered=False):
 
         if not isinstance(VBox, MetaHasTraits):
             return
@@ -173,7 +173,7 @@ class DynamicWidget(VBox):
             self.dynamic_widget_holder
         ]
 
-        # print(self.widget)
+        
         
         
         self.widget.children[1].children[-1].observe(self._add_widgets, names=['value'])
@@ -182,8 +182,12 @@ class DynamicWidget(VBox):
 
         # Manually trigger the children widget node initialization if there
         # is default or preset value
-        if (node.primary_type=='param' or node.primary_type=='optional') and (default_value or preset_value) and not self.initial_event.isSet():
 
+        branching = node.primary_type=='param' or node.primary_type=='optional'
+        value_presetting = default_value or preset_value
+        initial_event = not self.initial_event.isSet()
+
+        if (branching and value_presetting and initial_event):
             child_node = self.node.get_child_by_name(preset_value)
 
             new_widgets = []
@@ -205,9 +209,26 @@ class DynamicWidget(VBox):
                     
                         widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
                         new_widgets.append(widget)
-
-            print(new_widgets)
             
+            self.dynamic_widget_holder.children = tuple(new_widgets)
+
+        # Follow through the branching at the gui event trigger.
+        elif branching and gui_triggered:
+
+            new_widgets = []
+
+            for child_node in self.node.children:
+
+                if (child_node.secondary_type=='param' or child_node.secondary_type=='param_setter'):
+
+                    if child_node.name==self.widget.get_value():
+
+                        for _child_node in child_node.children:
+
+                            widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
+                            new_widgets.append(widget)
+
+
             self.dynamic_widget_holder.children = tuple(new_widgets)
 
     def _add_widgets(self, widg):
@@ -222,8 +243,6 @@ class DynamicWidget(VBox):
         # then loop over those children and add them all to the new_widgets
 
         input_value = widg['new']  # The picked option for choice param
-
-        print('asdfasdfasdf')
 
         child_node = self.node.get_child_by_name(input_value)
 
@@ -243,7 +262,8 @@ class DynamicWidget(VBox):
                     # if _child_node is param setter,
                     
                     # create new dynamicwidgets for each of those
-                    widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
+                    widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event,
+                        gui_triggered=True)
                     new_widgets.append(widget)
         
         self.dynamic_widget_holder.children = tuple(new_widgets)
@@ -271,183 +291,3 @@ class DynamicWidget(VBox):
 
             self.recur(child, key, value)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class DynamicSwitch(VBox):
-    
-    def __init__(self, widget1, widget2):
-
-        if not isinstance(VBox, MetaHasTraits):
-
-            return
-        
-        self.widget1 = widget1
-        self.widget2 = widget2
-        
-        self.widget = widgets.Button()
-        
-        self.widget.description = "Next"
-        
-        self.dynamic_widget_holder = VBox()
-
-        self.dynamic_widget_holder.children = [self.widget1]
-        
-        children = [
-            self.dynamic_widget_holder,
-            self.widget
-        ]
-        
-        self.widget.on_click(self._switch_widgets)
-        
-        super().__init__(children=children)
-        
-    def _switch_widgets(self, widg):
-        
-        if self.widget.description=='Back':
-
-            new_widget = self.widget1
-            self.widget.description = "Next"
-            
-        else:
-            
-            new_widget = self.widget2
-            self.widget.description = "Back"
-        
-        self.dynamic_widget_holder.children = [new_widget]
-        

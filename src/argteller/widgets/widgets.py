@@ -36,8 +36,8 @@ class ParamTextWidget(VBox):
                         align_content='stretch', 
                         justify_content='center',
                         # align_items='baseline stretch',
-                        width='50%',
-                        height='50px',
+                        width='70%',
+                        
                         flex_wrap='wrap',
                         border=None,
                         # flex_basis='200%'
@@ -118,14 +118,24 @@ class ParamChoiceWidget(VBox):
         if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
-                self.widget.value = str(preset_value) 
+
+            
+                self.widget.children[0].value = str(preset_value) 
                 
             elif default_value is not None:  
-                self.widget.value = str(default_value) 
+
+            
+                self.widget.children[0].value = str(default_value) 
+
+
 
             else:
-                self.widget.value = None
-                
+
+            
+
+                self.widget.children[0].value = None
+
+            
             self.initial = False
 
         children = [label, self.widget]
@@ -163,10 +173,11 @@ class ParamSetterWidget(VBox):
         if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
-                self.widget.value = str(preset_value) 
+                # the widget is now VBox
+                self.widget.children[-1].value = str(preset_value) 
                 
             elif default_value is not None:  
-                self.widget.value = str(default_value) 
+                self.widget.children[-1].value = str(default_value) 
                 
             self.initial = False
 

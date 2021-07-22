@@ -18,11 +18,13 @@ except ModuleNotFoundError:
 
 class DynamicSwitch(VBox):
     
-    def __init__(self, widget1, widget2):
+    def __init__(self, widget1, widget2, access_object):
 
         if not isinstance(VBox, MetaHasTraits):
 
             return
+
+        self.access_object = access_object
         
         self.widget1 = widget1
         self.widget2 = widget2
@@ -36,7 +38,7 @@ class DynamicSwitch(VBox):
         self.filepath_widget = widgets.Text(layout=widgets.Layout(width='60%'))
         self.filepath_widget.value = os.path.join(os.getcwd(), 'temp_dsl.txt')
         
-        
+        access_object.filepath_widget = self.filepath_widget
         
         self.dynamic_widget_holder1 = VBox()
         self.dynamic_widget_holder2 = HBox()
@@ -50,6 +52,8 @@ class DynamicSwitch(VBox):
         ]
         
         self.switch_widget.on_click(self._switch_widgets)
+
+        self.save_widget.on_click(self._save_dsl)
         
         super().__init__(children=children)
         
@@ -70,6 +74,24 @@ class DynamicSwitch(VBox):
             self.dynamic_widget_holder2.children = [self.switch_widget, self.save_widget, self.filepath_widget]
         
         self.dynamic_widget_holder1.children = [new_widget]
+
+    def _save_dsl(self, widg):
+
+        with open(self.filepath_widget.value, 'w') as f:
+        
+            f.write(self.access_object.get_active_param_values())
+
+
+
+
+        
+
+
+
+
+
+
+
 
 
 
