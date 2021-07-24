@@ -1,4 +1,4 @@
-from ..widgets.dynamic_widgets import DynamicSwitch
+from ..widgets.dynamic_switch import DynamicSwitch
 
 try:
 
@@ -61,8 +61,16 @@ def get_control_panel(access_object):
         tab_children.append(vbox)
 
     tab.children = tab_children
+
+    access_object.tab_widget = tab
+    access_object.topic_choice_widget = topic_choice
     
-    v = DynamicSwitch(topic_choice_box, tab_box)
+    v = DynamicSwitch(topic_choice_box, tab_box, access_object)
+
+
+
+
+
     
     return v
 

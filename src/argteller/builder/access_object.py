@@ -1,6 +1,6 @@
 from ..tree.tree_node import TreeNode
+from ..tree.tree_builder import display_tree
 from ..widgets.dynamic_widgets import DynamicWidget
-from ..widgets.dynamic_widgets import DynamicSwitch
 
 try:
 
@@ -20,10 +20,12 @@ from threading import Event
 
 
 class AccessObject():
+    """Creates the DynamicWidgets based on the input tree.
+    """
     
     def __init__(self, root, node_dicts):
 
-        initial_event = Event()
+        self.initial_event = Event()
         param_setter_event = Event()
 
         self.module_found = module_found
@@ -41,7 +43,7 @@ class AccessObject():
 
             for param in topic.children:
 
-                param_widget = DynamicWidget(topic.name, param, self.widget_dicts, initial_event, param_setter_event)
+                param_widget = DynamicWidget(topic.name, param, self.widget_dicts, self.initial_event, param_setter_event)
 
                 param_widgets.append(param_widget)
 
@@ -49,7 +51,11 @@ class AccessObject():
 
             self.param_vboxes[topic.name] = param_vbox
 
-        initial_event.set()
+        self.initial_event.set()
+
+    def display_tree(self):
+
+        display_tree(self.root)
 
     def get_topics(self):
     
@@ -90,19 +96,41 @@ class AccessObject():
             self._find_params(child, l)
 
     def get_value(self, param, topic=None):
-        
+        """This will return the string casted user input values. We will not
+        cast this value to the castable type since the access_object is meant
+        for the internal uses only. All widget values are internally treated
+        as strings, so we will keep it that way.
+
+        The returned values will be casted into castable types in the class
+        decorator just before the values are returned to the user.
+        """
         return self.get_widget(param, topic).value
 
-            
+    def set_value(self, value, param, topic=None):
+
+        self.get_widget(param, topic).value = value
+
     def get_vbox(self, topic):
         
         return self.param_vboxes[topic]
     
     def get_widget(self, param, topic=None):
+
+        if '/' in param:
+            topic, param = param.split('/')
         
         if topic:
+
+
             
-            return self.widget_dicts[topic][param]
+            
+            try:
+                return self.widget_dicts[topic][param].children[-1]
+            except:
+                pass
+            
+                print(param, topic, '=====')
+                print(self.widget_dicts, '+++++')
         
         else:
             
@@ -119,8 +147,10 @@ class AccessObject():
             if len(params) > 1:
                 
                 raise TypeError('Specify the topic!', topics)
+
+            
                 
-            return params[0]
+            return params[0].children[-1]
         
     def get_node(self, node, topic=None):
         
@@ -144,6 +174,61 @@ class AccessObject():
                 
                 raise TypeError('Specify the topic!', topics)
                     
+            if len(nodes)==0:
+                return None
                     
             return nodes[0]
+
+    def node_exists(self, node, topic=None):
+
+        node = self.get_node(node, topic)
+
+        if node is None:
+            return False
+        else:
+            return True
+
+    def get_active_param_values(self):
+    
+        dsl_gen = [""]
+
+        for topic in self.root.children:
+
+            if topic.name not in self.topic_choice_widget.value:
+                continue
+
+            dsl_gen[0] += "{}\n".format(topic.name)
+
+            added_params = []
+
+            for param in topic.children:  # genesis params
+
+                self._follow_branch(param, topic, dsl_gen, added_params)
+
+            if len(added_params)==0:
+
+                dsl = dsl_gen[0][0:-1]
+                dsl_gen[0] = '\n'.join(dsl.split('\n')[0:-1])
+                
+        return dsl_gen[0][0:-1]
+
+    def _follow_branch(self, param, topic, dsl_gen, added_params):
+        """Notice the similarity to _add_widgets method in DynamicWidget
+        class
+        """
+        
+        widget = self.get_widget(param.name, topic.name)
+        input_value = widget.value
+        
+        if input_value is not None:
+            dsl_gen[0] += "-{}:{}\n".format(param.name, input_value)
+            added_params.append(param.name)
+        
+        for child_node in param.children:  # Since this is choice param, child_nodes are all options
+            
+            if child_node.name==input_value:
+                
+                for _child_node in child_node.children:
+                    
+                    self._follow_branch(_child_node, topic, dsl_gen, added_params)
 
