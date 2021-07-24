@@ -23,4 +23,5 @@ package:
 	python setup.py bdist_wheel
 
 test:
-	coverage run -m pytest tests/test_tree.py
+	coverage run -m pytest tests/test_class_decorator.py
+	coverage run -m pytest tests/test_method_decorator.py
