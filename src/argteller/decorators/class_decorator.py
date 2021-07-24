@@ -67,10 +67,13 @@ class ArgtellerClassDecorator():
                 # of VAR_POSITIONAL and VAR_KEYWORD type parameter, we need
                 # to check manually.
 
+                has_VAR_POSITIONAL = inspect.Parameter.VAR_POSITIONAL in param_types
+                has_VAR_KEYWORD = inspect.Parameter.VAR_KEYWORD in param_types
+
                 
                 # If VAR_KEYWORD type parameter (e.g. **kwargs) is not in the original_signature,
                 # we cannot accept kwargs not in the param_names or not in the access_object.
-                if not inspect.Parameter.VAR_KEYWORD in param_types:
+                if not has_VAR_KEYWORD:
                     
                     for key, value in kwargs.items():
 
@@ -87,10 +90,10 @@ class ArgtellerClassDecorator():
                             else:
                                 raise TypeError("__init__() got an unexpected keyword argument '{}'!".format(
                                     key))
-                
-                # # If *args is not in the original_signagure,
-                # # we cannot accept args longer than there are
-                # # POSITIONAL_OR_KEYWORD type args in the signature.
+                # This checking may not be necessary anymore since we call super __init__ now.
+
+
+                # The below code is commented out because we call super __init__ now.
                 # if not inspect.Parameter.VAR_POSITIONAL in param_types:
                     
                 #     num_pos_or_kw = len([param_type for param_type in param_types if
@@ -103,10 +106,6 @@ class ArgtellerClassDecorator():
                 
     
                 signature_arg_preset_dict = dict()
-
-
-
-
 
                 # Inspect the user passed arguments at the __init__ method invocation.
                 check_pos_args = []
@@ -131,7 +130,7 @@ class ArgtellerClassDecorator():
                         elif param.name in kwargs:
                             
                             setattr(cls_self, param.name, kwargs[param.name])
-                            del kwargs[param.name]
+                            # del kwargs[param.name]
                             
                         else:
                             
@@ -174,21 +173,28 @@ class ArgtellerClassDecorator():
                 # 2) found in the kwargs
                 
 
-                # Now we check things in kwargs but not in params:
-
+                
                 in_tree = []
 
+                # List of keyword args found in the tree.
                 for k, v in kwargs.items():
 
                     if temp_access_object.node_exists(k):
 
                         in_tree.append(k)
 
+                # Add those to the preset dict.
                 for k in in_tree:
 
                     signature_arg_preset_dict[k] = kwargs[k]
 
-                    del kwargs[k]
+                    # If the k in kwargs is not in the signature
+                    # and if VAR_KEYWORD type parameter is not part of signature:
+                    if k not in param_names and not has_VAR_KEYWORD:
+
+                        # then delete this key so that we don't get the unexpected keyword 
+                        # argument exception.
+                        del kwargs[k]
 
 
 
@@ -215,12 +221,6 @@ class ArgtellerClassDecorator():
 
                     __access_object__.set_value(str(v), k)
 
-
-
-
-
-
-
                 if __access_object__.module_found:
 
                     cls_self.__control_panel__ = get_control_panel(__access_object__)
@@ -239,24 +239,22 @@ class ArgtellerClassDecorator():
                     
                     widget_params = []
 
-                # Below missing positional arguments cannot be found in the widget 
-                # param namespace.
+                # Below missing positional arguments cannot be found in the widget param namespace.
                 
-                missing_pos_args = []
+                # missing_pos_args = []
                 
-                for check_pos_arg in check_pos_args:
+                # for check_pos_arg in check_pos_args:
                     
-                    if check_pos_arg not in widget_params:
+                #     if check_pos_arg not in widget_params:
                         
-                        missing_pos_args.append("'{}'".format(check_pos_arg))
+                #         missing_pos_args.append("'{}'".format(check_pos_arg))
                         
-                if len(missing_pos_args) > 0:
+                # if len(missing_pos_args) > 0:
 
-                    missing_args = " and ".join(missing_pos_args)
+                #     missing_args = " and ".join(missing_pos_args)
 
-                    raise TypeError("__init__() missing {} required positional arguments: {} !".format(
-                        len(missing_pos_args), missing_args))
-
+                #     raise TypeError("__init__() missing {} required positional arguments: {} !".format(
+                #         len(missing_pos_args), missing_args))
 
 
                 super(Wrapped, cls_self).__init__(*args, **kwargs)
@@ -427,20 +425,6 @@ class ArgtellerClassDecorator():
                     os.remove(filename)
 
                 return dsl
-
-            def __del__(cls_self):
-
-
-                
-
-                tmpdsl_filename = '__tmpdsl__.txt'.format(time.time())
-                cls_self.__savedsl__(tmpdsl_filename)
-                
-
-                # text_file = open("sample.txt", "w")
-                # n = text_file.write('Welcome to pythonexamples.org')
-                # text_file.close()
-
 
             def __access_object__(cls_self):
 

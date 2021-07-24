@@ -7,10 +7,10 @@ def ArgtellerMethodDecorator(source_name, topic=None):
 
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
-            
+
             original_signature = inspect.signature(func)
             
-            new_args = [self]
+            new_args = []
     
             params = list(original_signature.parameters.values())
             
@@ -52,6 +52,8 @@ def ArgtellerMethodDecorator(source_name, topic=None):
                     if len(args)>=i:
                         
                         new_args.append(args[i-1])
+
+                        # new_args.append(args.pop(0))
                     
                     elif param.name in kwargs:
                         
@@ -87,13 +89,17 @@ def ArgtellerMethodDecorator(source_name, topic=None):
                     raise TypeError("__init__() takes from {} to {} positional arguments but {} were given".format(
                         num_hard_pos+1, num_pos+1, len(args)+1))
 
+            elif has_VAR_POSITIONAL and num_pos < len(args):
+
+                new_args += args[num_pos:]
+
             if len(missing_positional_arguments) > 0:
 
                 missing_args = " and ".join(missing_positional_arguments)
 
                 raise TypeError("__init__() missing {} required positional arguments: {} !".format(len(missing_positional_arguments), missing_args))
                         
-            cr = func(*new_args, **kwargs) # call original function
+            cr = func(self, *new_args, **kwargs) # call original function
 
             if __source_obj__ is not None:
                 
