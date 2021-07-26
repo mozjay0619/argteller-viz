@@ -35,6 +35,8 @@ class AccessObject():
         
         self.root, self.node_dicts = root, node_dicts
         self.widget_dicts = defaultdict(dict)
+        self.widget_nodes = defaultdict(dict)  # this should replace widget_dicts, so we don't have duplicates
+        # we don't have duplicates they are the same objects.
         self.param_vboxes = {}
 
         for topic in self.root.children:
@@ -43,7 +45,7 @@ class AccessObject():
 
             for param in topic.children:
 
-                param_widget = DynamicWidget(topic.name, param, self.widget_dicts, self.initial_event, param_setter_event)
+                param_widget = DynamicWidget(topic.name, param, self.widget_dicts, self.widget_nodes, self.initial_event, param_setter_event)
 
                 param_widgets.append(param_widget)
 
@@ -73,6 +75,38 @@ class AccessObject():
             self._find_params(self.root, l)
 
             return l
+
+
+    def get_effective_params(self, topic=None):
+
+        effective_params = []
+
+        params = self.get_params(topic)
+
+        for param in params:
+
+            
+
+            widget_type = self.widget_nodes[topic][param].type
+
+            if widget_type=='text':
+
+                if not self.get_value(param, topic) == '':
+
+                    effective_params.append(param)
+
+            elif widget_type=='choice':
+
+                if not self.get_value(param, topic) is None:
+
+                    effective_params.append(param)
+
+
+        return effective_params
+
+
+
+
 
     def _find_params(self, node, l):
 
