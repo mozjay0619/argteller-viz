@@ -212,7 +212,7 @@ class DynamicWidget(VBox):
                     
                     for _child_node in child_node.children:
                     
-                        widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
+                        widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.widget_nodes, self.initial_event, self.param_setter_event)
                         new_widgets.append(widget)
             
             self.dynamic_widget_holder.children = tuple(new_widgets)
@@ -230,7 +230,7 @@ class DynamicWidget(VBox):
 
                         for _child_node in child_node.children:
 
-                            widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event)
+                            widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.widget_nodes, self.initial_event, self.param_setter_event)
                             new_widgets.append(widget)
 
 
@@ -267,7 +267,7 @@ class DynamicWidget(VBox):
                     # if _child_node is param setter,
                     
                     # create new dynamicwidgets for each of those
-                    widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.initial_event, self.param_setter_event,
+                    widget = DynamicWidget(self.topic, _child_node, self.widget_dicts, self.widget_nodes, self.initial_event, self.param_setter_event,
                         gui_triggered=True)
                     new_widgets.append(widget)
         
