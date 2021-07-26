@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 class DynamicWidget(VBox):
     # https://stackoverflow.com/questions/60998665/is-it-possible-to-make-another-ipywidgets-widget-appear-based-on-dropdown-select
     
-    def __init__(self, topic, node, widget_dicts, initial_event, param_setter_event, gui_triggered=False):
+    def __init__(self, topic, node, widget_dicts, widget_nodes, initial_event, param_setter_event, gui_triggered=False):
 
         if not isinstance(VBox, MetaHasTraits):
             return
@@ -37,6 +37,7 @@ class DynamicWidget(VBox):
         self.node = node
         
         self.widget_dicts = widget_dicts
+        self.widget_nodes = widget_nodes
 
         default_value = None
         preset_value = None
@@ -80,6 +81,7 @@ class DynamicWidget(VBox):
                         param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
+                    self.widget_nodes[self.topic][self.node.name] = self.widget
                    
             elif node.secondary_type=='string':
 
@@ -107,6 +109,7 @@ class DynamicWidget(VBox):
                         param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
+                    self.widget_nodes[self.topic][self.node.name] = self.widget
                    
             elif node.secondary_type=='string_sample':
 
@@ -137,12 +140,14 @@ class DynamicWidget(VBox):
                         param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
+                    self.widget_nodes[self.topic][self.node.name] = self.widget
                 
         elif node.primary_type=='custom1':
             
             self.widget = Custom1()
             
             self.widget_dicts[self.topic][self.node.name] = 'custom1'
+            self.widget_nodes[self.topic][self.node.name] = self.widget
 
         elif node.primary_type=='param_setter':
 

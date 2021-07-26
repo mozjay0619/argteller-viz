@@ -301,7 +301,7 @@ class ArgtellerClassDecorator():
 
             def __getparams__(cls_self):
 
-                return __access_object__.get_params(cls_self.topic)
+                return __access_object__.get_effective_params(cls_self.topic)
 
             def __getvalue__(cls_self, param):
                 """The return values will be automatically typecasted. 

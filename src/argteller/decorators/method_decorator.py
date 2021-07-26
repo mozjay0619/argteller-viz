@@ -57,8 +57,9 @@ def ArgtellerMethodDecorator(source_name, topic=None):
                     
                     elif param.name in kwargs:
                         
-                        new_args.append(kwargs[param.name])
-                        del kwargs[param.name]
+                        # new_args.append(kwargs[param.name])
+                        # del kwargs[param.name]
+                        pass  # just keep it there
                         
                     else:
                         
@@ -66,7 +67,9 @@ def ArgtellerMethodDecorator(source_name, topic=None):
                         
                             if param.name in __source_obj__.__getparams__():
 
-                                new_args.append(__source_obj__.__getvalue__(param.name))
+                                kwargs[param.name] = __source_obj__.__getvalue__(param.name)
+
+                                # new_args.append(__source_obj__.__getvalue__(param.name))
 
                         else:
                             
@@ -74,7 +77,9 @@ def ArgtellerMethodDecorator(source_name, topic=None):
                                 
                                 missing_positional_arguments.append("'{}'".format(param.name))
                             
-                            new_args.append(param.default)
+                            # new_args.append(param.default)
+
+                            kwargs[param.name] = param.default
                             
             if not has_VAR_POSITIONAL and num_pos < len(args):
                 

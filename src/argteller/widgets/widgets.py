@@ -24,6 +24,7 @@ class ParamTextWidget(VBox):
             return
 
         self.name = name
+        self.type = 'text'
 
         self.initial = True
         self.initial_event = initial_event
@@ -98,6 +99,7 @@ class ParamChoiceWidget(VBox):
             return
 
         self.name = name
+        self.type = 'choice'
         
         self.initial = True
         self.initial_event = initial_event
@@ -156,6 +158,7 @@ class ParamSetterWidget(VBox):
             return
 
         self.name = name
+        self.type = 'param_setter'
 
         self.initial = True
         self.initial_event = initial_event
@@ -195,6 +198,7 @@ class Custom1(VBox):
             return
 
         self.name = 'custom1'
+        self.type = 'custom'
         
         layout = {'width': '600px'}
         style = {'description_width': 'initial'}
