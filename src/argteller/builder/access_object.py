@@ -101,12 +101,7 @@ class AccessObject():
 
                     effective_params.append(param)
 
-
         return effective_params
-
-
-
-
 
     def _find_params(self, node, l):
 
@@ -142,7 +137,7 @@ class AccessObject():
 
     def set_value(self, value, param, topic=None):
 
-        self.get_widget(param, topic).value = value
+        self.get_widget(param, topic).value = str(value)
 
     def get_vbox(self, topic):
         
@@ -226,14 +221,14 @@ class AccessObject():
     
         dsl_gen = [""]
 
+        added_params = []
+
         for topic in self.root.children:
 
             if topic.name not in self.topic_choice_widget.value:
                 continue
 
             dsl_gen[0] += "{}\n".format(topic.name)
-
-            added_params = []
 
             for param in topic.children:  # genesis params
 
@@ -251,13 +246,23 @@ class AccessObject():
         class
         """
         
-        widget = self.get_widget(param.name, topic.name)
-        input_value = widget.value
-        
-        if input_value is not None:
-            dsl_gen[0] += "-{}:{}\n".format(param.name, input_value)
-            added_params.append(param.name)
-        
+        input_value = self.get_value(param.name, topic.name)
+        widget_type = self.widget_nodes[topic.name][param.name].type
+
+        if widget_type=='text':
+
+            if not input_value == '':
+
+                dsl_gen[0] += "-{}:{}\n".format(param.name, input_value)
+                added_params.append(param.name)
+
+        elif widget_type=='choice':
+
+            if not input_value is None:
+
+                dsl_gen[0] += "-{}:{}\n".format(param.name, input_value)
+                added_params.append(param.name)
+
         for child_node in param.children:  # Since this is choice param, child_nodes are all options
             
             if child_node.name==input_value:
