@@ -318,6 +318,9 @@ class ArgtellerClassDecorator():
                 if value is None:
                     return value
 
+                if isinstance(value, bool):
+                    return value
+
                 try:    
                     value = int(value)
                     return value

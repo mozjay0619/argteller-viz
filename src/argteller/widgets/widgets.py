@@ -43,9 +43,6 @@ class ParamTextWidget(VBox):
                         border=None,
                         # flex_basis='200%'
                         )
-
-
-        
         
         if preset_value:
             label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
@@ -54,14 +51,8 @@ class ParamTextWidget(VBox):
         else:
             label = widgets.HTML(f"<b><font size=2 color='black'>{self.name}</b>")
 
-        # if example is not None:
-
-        #     example_label = widgets.Label(value='E.g. {}: '.format(example))
-
-        #     label = VBox([label, example_label])
-        
         if widget:
-            self.widget = widget#VBox([widget])
+            self.widget = widget
         else:
             if example is None:
                 self.widget = VBox([widgets.Text(style=style, layout=layout)])
@@ -69,9 +60,6 @@ class ParamTextWidget(VBox):
                 self.widget = VBox([
                     widgets.Label(value='E.g. {}: '.format(example)),
                     widgets.Text(style=style, layout=layout)])
-
-
-
 
         if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
@@ -113,27 +101,21 @@ class ParamChoiceWidget(VBox):
             label = widgets.HTML(f"<b><font size=2 color='black'>{self.name}</b>")
 
         if widget:
-            self.widget = widget#VBox([widget])
+            self.widget = widget
         else:
             self.widget =  VBox([widgets.RadioButtons(options=options, disabled=False)])
 
         if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
-
             
                 self.widget.children[0].value = str(preset_value) 
                 
             elif default_value is not None:  
 
-            
                 self.widget.children[0].value = str(default_value) 
 
-
-
             else:
-
-            
 
                 self.widget.children[0].value = None
 
@@ -146,6 +128,7 @@ class ParamChoiceWidget(VBox):
     def get_value(self):
         
         return self.widget.children[-1].value
+
 
 class ParamSetterWidget(VBox):
 
@@ -187,6 +170,62 @@ class ParamSetterWidget(VBox):
       
         children = [label, self.widget]
         super().__init__(children=children)
+
+
+class ParamBooleanWidget(VBox):
+    
+    def __init__(self, name, default_value=None, preset_value=None, optional=False, widget=None, initial_event=None, param_setter_event=None):
+        
+        if not isinstance(VBox, MetaHasTraits):
+            return
+
+        self.name = name
+        self.type = 'boolean'
+        
+        self.initial = True
+        self.initial_event = initial_event
+        self.param_setter_event = param_setter_event
+        
+        if preset_value:
+            label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
+        elif optional:
+            label = widgets.HTML(f"<b><font size=2 color='grey'>{self.name}</b>")
+        else:
+            label = widgets.HTML(f"<b><font size=2 color='black'>{self.name}</b>")
+            
+        if widget:
+            self.widget = widget
+        else:
+            self.widget =  VBox([widgets.Checkbox(
+                value=False,
+                description='True',
+                disabled=False,
+                indent=False
+            )])
+            
+        if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
+
+            if preset_value is not None:  # So that preset values take precedence over default values.
+            
+                self.widget.children[0].value = str(preset_value) 
+                
+            elif default_value is not None:  
+
+                self.widget.children[0].value = str(default_value) 
+
+            else:
+
+                self.widget.children[0].value = False
+
+            
+            self.initial = False
+
+        children = [label, self.widget]
+        super().__init__(children=children)
+        
+    def get_value(self):
+        
+        return self.widget.children[-1].value
 
         
 class Custom1(VBox):

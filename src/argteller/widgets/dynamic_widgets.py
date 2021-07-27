@@ -1,4 +1,5 @@
 from .widgets import ParamChoiceWidget
+from .widgets import ParamBooleanWidget
 from .widgets import Custom1
 from .widgets import ParamTextWidget
 from .widgets import ParamSetterWidget
@@ -74,6 +75,34 @@ class DynamicWidget(VBox):
                     self.widget = ParamChoiceWidget(
                         name=self.node.name, 
                         options=options, 
+                        default_value=default_value, 
+                        preset_value=preset_value, 
+                        optional=is_optional_param,
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
+                    
+                    self.widget_dicts[self.topic][self.node.name] = self.widget.widget
+                    self.widget_nodes[self.topic][self.node.name] = self.widget
+
+            elif node.secondary_type=='boolean':
+
+                if self.node.name in self.widget_dicts[self.topic]:
+
+                    widget = self.widget_dicts[self.topic][self.node.name]
+
+                    self.widget = ParamBooleanWidget(
+                        name=self.node.name, 
+                        default_value=default_value, 
+                        preset_value=preset_value, 
+                        widget=widget,
+                        optional=is_optional_param,
+                        initial_event=self.initial_event,
+                        param_setter_event=self.param_setter_event)
+
+                else:
+                    
+                    self.widget = ParamBooleanWidget(
+                        name=self.node.name, 
                         default_value=default_value, 
                         preset_value=preset_value, 
                         optional=is_optional_param,
