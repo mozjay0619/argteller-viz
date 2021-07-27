@@ -122,6 +122,10 @@ def parse_dsl(dsl):
         if (primary_type=='param' or primary_type=='optional') and secondary_type is None:
             secondary_type = 'string'
 
+        if primary_type=='boolean':
+            primary_type = 'param'
+            secondary_type = 'boolean'
+
         if name != '':
             parsed_node_data.append([name, primary_type, secondary_type, prev_depth, default_value])
             

@@ -8,7 +8,7 @@ import setuptools
 from setuptools.command.install import install
 
 # circleci.py version
-VERSION = "v0.0.b18"
+VERSION = "v0.0.b19"
 
 def readme():
     """print long description"""

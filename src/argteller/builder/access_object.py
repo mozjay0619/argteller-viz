@@ -101,6 +101,10 @@ class AccessObject():
 
                     effective_params.append(param)
 
+            elif widget_type=='boolean':
+
+                effective_params.append(param)
+
         return effective_params
 
     def _find_params(self, node, l):
@@ -262,6 +266,11 @@ class AccessObject():
 
                 dsl_gen[0] += "-{}:{}\n".format(param.name, input_value)
                 added_params.append(param.name)
+
+        elif widget_type=='boolean':
+
+            dsl_gen[0] += "-{}:{}\n".format(param.name, input_value)
+            added_params.append(param.name)
 
         for child_node in param.children:  # Since this is choice param, child_nodes are all options
             
