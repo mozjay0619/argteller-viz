@@ -145,7 +145,7 @@ class AccessObject():
         widget_type = self.get_widget_node(param, topic).type
 
         if widget_type=='boolean':
-            self.get_widget(param, topic).value = bool(value)
+            self.get_widget(param, topic).value = eval(value)
 
         else:
             self.get_widget(param, topic).value = str(value)            
