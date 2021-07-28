@@ -8,7 +8,7 @@ import setuptools
 from setuptools.command.install import install
 
 # circleci.py version
-VERSION = "v0.0.b19"
+VERSION = "v0.0.b20"
 
 def readme():
     """print long description"""
@@ -28,10 +28,6 @@ class VerifyVersionCommand(install):
                 tag, VERSION
             )
             sys.exit(info)
-
-# tests_require = [
-#     'IPython'
-#     ]
 
 setuptools.setup(
     name="argteller-viz",

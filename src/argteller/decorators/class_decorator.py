@@ -350,7 +350,7 @@ class ArgtellerClassDecorator():
 
             def get_dsl(cls_self):
 
-                return __access_object__.get_active_param_values()
+                print(__access_object__.get_active_param_values())
 
             def __savedsl__(cls_self, filename):
 

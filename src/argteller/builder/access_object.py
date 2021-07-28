@@ -141,11 +141,56 @@ class AccessObject():
 
     def set_value(self, value, param, topic=None):
 
-        self.get_widget(param, topic).value = str(value)
+
+        widget_type = self.get_widget_node(param, topic).type
+
+        if widget_type=='boolean':
+            self.get_widget(param, topic).value = bool(value)
+
+        else:
+            self.get_widget(param, topic).value = str(value)            
+
+
 
     def get_vbox(self, topic):
         
         return self.param_vboxes[topic]
+
+    def get_widget_node(self, param, topic=None):
+
+        # return self.widget_nodes[topic][param]
+
+
+        if topic:
+
+
+            
+            
+            try:
+                return self.widget_nodes[topic][param]
+            except:
+                pass
+            
+                print(param, topic, '=====')
+                print(self.widget_dicts, '+++++')
+        
+        else:
+            
+            params = []
+            topics = []
+            
+            for topic, param_dict in self.widget_nodes.items():
+            
+                if param in param_dict:
+                    
+                    params.append(param_dict[param])
+                    topics.append(topic)
+                    
+            if len(params) > 1:
+                
+                raise TypeError('Specify the topic!', topics)
+
+        return params[0]
     
     def get_widget(self, param, topic=None):
 
@@ -242,8 +287,10 @@ class AccessObject():
 
                 dsl = dsl_gen[0][0:-1]
                 dsl_gen[0] = '\n'.join(dsl.split('\n')[0:-1])
+
+            dsl_gen[0] += "\n"
                 
-        return dsl_gen[0][0:-1]
+        return dsl_gen[0][0:-2]
 
     def _follow_branch(self, param, topic, dsl_gen, added_params):
         """Notice the similarity to _add_widgets method in DynamicWidget
