@@ -30,7 +30,8 @@ def check_default(line):
         return line, None
     
     try:
-        line1, line2 = line.split(':')
+        line_parts = line.split(':')
+        line1, line2 = line_parts[0], ':'.join(line_parts[1:])
 
     except:
 
@@ -39,16 +40,16 @@ def check_default(line):
     if line2=='':
         return line1, None
     
-    if ',' in line2:
+    # if ',' in line2:
     
-        line2, line3 = line2.split(',')
+    #     line2, line3 = line2.split(',')
 
-        if line3=='int':
-            default_value = int(eval(line2))
-        elif line3=='float':
-            default_value = float(eval(line2))
-        else:
-            default_value = line2
+    #     if line3=='int':
+    #         default_value = int(eval(line2))
+    #     elif line3=='float':
+    #         default_value = float(eval(line2))
+    #     else:
+    #         default_value = line2
             
     else:
         
