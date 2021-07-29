@@ -30,7 +30,8 @@ def check_default(line):
         return line, None
     
     try:
-        line1, line2 = line.split(':')
+        line_parts = line.split(':')
+        line1, line2 = line_parts[0], ':'.join(line_parts[1:])
 
     except:
 
