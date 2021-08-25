@@ -67,7 +67,7 @@ class DynamicWidget(VBox):
                         preset_value=preset_value, 
                         widget=widget,
                         optional=is_optional_param,
-                        initial_event=self.initial_event,
+                        widget_initialized=True,
                         param_setter_event=self.param_setter_event)
 
                 else:
@@ -78,7 +78,7 @@ class DynamicWidget(VBox):
                         default_value=default_value, 
                         preset_value=preset_value, 
                         optional=is_optional_param,
-                        initial_event=self.initial_event,
+                        widget_initialized=False,
                         param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
@@ -96,7 +96,7 @@ class DynamicWidget(VBox):
                         preset_value=preset_value, 
                         widget=widget,
                         optional=is_optional_param,
-                        initial_event=self.initial_event,
+                        widget_initialized=True,
                         param_setter_event=self.param_setter_event)
 
                 else:
@@ -106,7 +106,7 @@ class DynamicWidget(VBox):
                         default_value=default_value, 
                         preset_value=preset_value, 
                         optional=is_optional_param,
-                        initial_event=self.initial_event,
+                        widget_initialized=False,
                         param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
@@ -124,7 +124,7 @@ class DynamicWidget(VBox):
                         preset_value=preset_value,
                         optional=is_optional_param, 
                         widget=widget,
-                        initial_event=self.initial_event,
+                        widget_initialized=True,
                         param_setter_event=self.param_setter_event)
 
                 else:
@@ -134,7 +134,7 @@ class DynamicWidget(VBox):
                         default_value=default_value,
                         preset_value=preset_value,
                         optional=is_optional_param,
-                        initial_event=self.initial_event,
+                        widget_initialized=False,
                         param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
@@ -152,7 +152,7 @@ class DynamicWidget(VBox):
                         preset_value=preset_value,
                         optional=is_optional_param, 
                         widget=widget,
-                        initial_event=self.initial_event,
+                        widget_initialized=True,
                         param_setter_event=self.param_setter_event)
 
                 else:
@@ -165,7 +165,7 @@ class DynamicWidget(VBox):
                         example=string_sample, 
                         default_value=default_value,
                         preset_value=preset_value,
-                        initial_event=self.initial_event,
+                        widget_initialized=False,
                         param_setter_event=self.param_setter_event)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
@@ -195,7 +195,7 @@ class DynamicWidget(VBox):
                 widget=widget, 
                 default_value=self.node.default_value,
                 preset_value=preset_value,
-                initial_event=self.initial_event,
+                widget_initialized=False,
                 param_setter_event=self.param_setter_event)
 
             self.currently_param_setter = True
@@ -207,8 +207,6 @@ class DynamicWidget(VBox):
             self.dynamic_widget_holder
         ]
 
-        
-        
         
         self.widget.children[1].children[-1].observe(self._add_widgets, names=['value'])
 
