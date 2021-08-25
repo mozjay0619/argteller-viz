@@ -152,7 +152,6 @@ class AccessObject():
             self.get_widget(param, topic).value = str(value)            
 
 
-
     def get_vbox(self, topic):
         
         return self.param_vboxes[topic]

@@ -203,11 +203,11 @@ class ParamBooleanWidget(VBox):
 
             if preset_value is not None:  # So that preset values take precedence over default values.
             
-                self.widget.children[0].value = str(preset_value) 
+                self.widget.children[0].value = bool(preset_value)
                 
             elif default_value is not None:  
 
-                self.widget.children[0].value = str(default_value) 
+                self.widget.children[0].value = bool(default_value)
 
             else:
 
@@ -222,6 +222,8 @@ class ParamBooleanWidget(VBox):
     def get_value(self):
         
         return self.widget.children[-1].value
+
+
 
         
 class Custom1(VBox):
