@@ -57,7 +57,7 @@ class ParamTextWidget(VBox):
                 self.widget = VBox([widgets.Text(style=style, layout=layout)])
             else:
                 self.widget = VBox([
-                    widgets.Label(value='E.g. {}: '.format(example)),
+                    widgets.Label(value=example),
                     widgets.Text(style=style, layout=layout)])
 
         if self.initial or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
