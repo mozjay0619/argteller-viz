@@ -94,7 +94,13 @@ def parse_dsl(dsl):
         if prev_line=='':
             pass
         else:
-            primary_type = check_type(prev_line)
+            # check the name portion of the prev_line
+            # unless the : is there to support default value, : cannot occur in name itself
+
+            prev_line_name = prev_line.split(':')[0]
+
+
+            primary_type = check_type(prev_line_name)
 
         secondary_type = None
 

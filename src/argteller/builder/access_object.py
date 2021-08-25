@@ -36,6 +36,7 @@ class AccessObject():
         self.root, self.node_dicts = root, node_dicts
         self.widget_dicts = defaultdict(dict)
         self.widget_nodes = defaultdict(dict)  # this should replace widget_dicts, so we don't have duplicates
+
         # we don't have duplicates they are the same objects.
         self.param_vboxes = {}
 

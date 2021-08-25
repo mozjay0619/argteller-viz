@@ -17,7 +17,7 @@ except ModuleNotFoundError:
 
 class ParamTextWidget(VBox):
     
-    def __init__(self, name, example=None, default_value=None, preset_value=None, optional=False, widget=None, initial_event=None, param_setter_event=None):
+    def __init__(self, name, example=None, default_value=None, preset_value=None, optional=False, widget=None, widget_initialized=None, param_setter_event=None):
 
         if not isinstance(VBox, MetaHasTraits):
 
@@ -26,8 +26,7 @@ class ParamTextWidget(VBox):
         self.name = name
         self.type = 'text'
 
-        self.initial = True
-        self.initial_event = initial_event
+        self.initial = not widget_initialized
         self.param_setter_event = param_setter_event
         
         style = style = {'description_width': 'initial'}
@@ -61,7 +60,7 @@ class ParamTextWidget(VBox):
                     widgets.Label(value='E.g. {}: '.format(example)),
                     widgets.Text(style=style, layout=layout)])
 
-        if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
+        if self.initial or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
                 self.widget.children[-1].value = str(preset_value) 
@@ -81,7 +80,7 @@ class ParamTextWidget(VBox):
 
 class ParamChoiceWidget(VBox):
     
-    def __init__(self, name, options, default_value=None, preset_value=None, optional=False, widget=None, initial_event=None, param_setter_event=None):
+    def __init__(self, name, options, default_value=None, preset_value=None, optional=False, widget=None, widget_initialized=None, param_setter_event=None):
 
         if not isinstance(VBox, MetaHasTraits):
             return
@@ -89,8 +88,7 @@ class ParamChoiceWidget(VBox):
         self.name = name
         self.type = 'choice'
         
-        self.initial = True
-        self.initial_event = initial_event
+        self.initial = not widget_initialized
         self.param_setter_event = param_setter_event
         
         if preset_value:
@@ -105,7 +103,7 @@ class ParamChoiceWidget(VBox):
         else:
             self.widget =  VBox([widgets.RadioButtons(options=options, disabled=False)])
 
-        if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
+        if self.initial or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
             
@@ -132,7 +130,7 @@ class ParamChoiceWidget(VBox):
 
 class ParamSetterWidget(VBox):
 
-    def __init__(self, name, widget, default_value=None, preset_value=None, initial_event=None, param_setter_event=None):
+    def __init__(self, name, widget, default_value=None, preset_value=None, widget_initialized=None, param_setter_event=None):
 
         # this widget already exists
 
@@ -143,8 +141,7 @@ class ParamSetterWidget(VBox):
         self.name = name
         self.type = 'param_setter'
 
-        self.initial = True
-        self.initial_event = initial_event
+        self.initial = not widget_initialized
         self.param_setter_event = param_setter_event
 
         # This is just label for this widget. The values are actually being
@@ -156,7 +153,7 @@ class ParamSetterWidget(VBox):
 
         self.widget = widget
 
-        if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
+        if self.initial or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
                 # the widget is now VBox
@@ -174,7 +171,7 @@ class ParamSetterWidget(VBox):
 
 class ParamBooleanWidget(VBox):
     
-    def __init__(self, name, default_value=None, preset_value=None, optional=False, widget=None, initial_event=None, param_setter_event=None):
+    def __init__(self, name, default_value=None, preset_value=None, optional=False, widget=None, widget_initialized=None, param_setter_event=None):
         
         if not isinstance(VBox, MetaHasTraits):
             return
@@ -182,8 +179,7 @@ class ParamBooleanWidget(VBox):
         self.name = name
         self.type = 'boolean'
         
-        self.initial = True
-        self.initial_event = initial_event
+        self.initial = not widget_initialized
         self.param_setter_event = param_setter_event
         
         if preset_value:
@@ -203,7 +199,7 @@ class ParamBooleanWidget(VBox):
                 indent=False
             )])
             
-        if (self.initial and not self.initial_event.isSet()) or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
+        if self.initial or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
             if preset_value is not None:  # So that preset values take precedence over default values.
             
