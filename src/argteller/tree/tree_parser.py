@@ -24,8 +24,6 @@ def check_type(line):
 
 def check_default(line):
     
-    line = line.replace(" ", "")
-    
     if not ':' in line:
         return line, None
     
@@ -63,6 +61,8 @@ def check_default(line):
         except ValueError:
             
             default_value = line2
+
+    line1 = line1.replace(" ", "")
             
     return line1, default_value
 
@@ -121,6 +121,7 @@ def parse_dsl(dsl):
             name = re.sub('^[\s=+-?#0-9]+', '', prev_line)
 
             name, default_value = check_default(name)
+
         else:
             name = re.sub('^[\s=]+', '', prev_line)
 
