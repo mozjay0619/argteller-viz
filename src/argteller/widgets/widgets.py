@@ -17,7 +17,8 @@ except ModuleNotFoundError:
 
 class ParamTextWidget(VBox):
     
-    def __init__(self, name, example=None, default_value=None, preset_value=None, optional=False, widget=None, widget_initialized=None, param_setter_event=None):
+    def __init__(self, name, example=None, default_value=None, preset_value=None, optional=False, widget=None, 
+        widget_initialized=None, param_setter_event=None, set_from=None):
 
         if not isinstance(VBox, MetaHasTraits):
 
@@ -42,11 +43,12 @@ class ParamTextWidget(VBox):
                         border=None,
                         # flex_basis='200%'
                         )
-        
-        if preset_value:
+        if set_from:
+            label = widgets.HTML(f"<b><font size=2 color='grey'>{self.name} (set via {set_from})</b>")
+        elif preset_value:
             label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
         elif optional:
-            label = widgets.HTML(f"<b><font size=2 color='grey'>{self.name}</b>")
+            label = widgets.HTML(f"<b><font size=2 color='grey'>{self.name} (optional)</b>")
         else:
             label = widgets.HTML(f"<b><font size=2 color='black'>{self.name}</b>")
 

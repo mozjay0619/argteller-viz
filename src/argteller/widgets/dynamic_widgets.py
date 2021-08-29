@@ -43,7 +43,7 @@ class DynamicWidget(VBox):
         default_value = None
         preset_value = None
 
-        if node.primary_type=='param' or node.primary_type=='optional':
+        if node.primary_type=='param' or node.primary_type=='optional' or node.primary_type=='alien':
 
             is_optional_param = node.primary_type=='optional'
 
@@ -125,7 +125,8 @@ class DynamicWidget(VBox):
                         optional=is_optional_param, 
                         widget=widget,
                         widget_initialized=True,
-                        param_setter_event=self.param_setter_event)
+                        param_setter_event=self.param_setter_event,
+                        set_from=self.node.set_from)
 
                 else:
                 
@@ -135,7 +136,8 @@ class DynamicWidget(VBox):
                         preset_value=preset_value,
                         optional=is_optional_param,
                         widget_initialized=False,
-                        param_setter_event=self.param_setter_event)
+                        param_setter_event=self.param_setter_event,
+                        set_from=self.node.set_from)
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                     self.widget_nodes[self.topic][self.node.name] = self.widget
