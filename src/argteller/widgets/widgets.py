@@ -90,6 +90,8 @@ class ParamChoiceWidget(VBox):
         
         self.initial = not widget_initialized
         self.param_setter_event = param_setter_event
+
+        layout = Layout(width='auto')
         
         if preset_value:
             label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
@@ -101,7 +103,7 @@ class ParamChoiceWidget(VBox):
         if widget:
             self.widget = widget
         else:
-            self.widget =  VBox([widgets.RadioButtons(options=options, disabled=False)])
+            self.widget =  VBox([widgets.RadioButtons(options=options, disabled=False, layout=layout)])
 
         if self.initial or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
 
