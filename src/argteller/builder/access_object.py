@@ -298,7 +298,14 @@ class AccessObject():
         """
         
         input_value = self.get_value(param.name, topic.name)
-        widget_type = self.widget_nodes[topic.name][param.name].type
+
+        if param.name in self.widget_nodes[topic.name]:  # For the topic/param names
+
+            widget_type = self.widget_nodes[topic.name][param.name].type
+
+        else:
+
+            widget_type = None
 
         if widget_type=='text':
 
