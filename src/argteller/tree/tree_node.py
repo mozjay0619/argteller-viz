@@ -1,6 +1,7 @@
 class TreeNode():
     
-    def __init__(self, depth, name, default_value, primary_type, secondary_type=None, preset_value=None):
+    def __init__(self, depth, name, default_value, primary_type, secondary_type=None, preset_value=None,
+        set_from=None):
         
         self.depth = depth
         self.name = name
@@ -9,6 +10,8 @@ class TreeNode():
         
         self.primary_type = primary_type
         self.secondary_type = secondary_type
+
+        self.set_from = set_from
         
         self.children = []
         

@@ -7,6 +7,8 @@ from collections import defaultdict
 def check_type(line):
     if '/' in line:
         return 'param_setter'
+    elif ('(' in line) & (')' in line):
+        return 'alien'
     elif line[0]=='-':
         return 'param'
     elif line[0:2]=='==':
@@ -117,7 +119,15 @@ def parse_dsl(dsl):
             # think it has shallower param induced from it
             secondary_type = check_type(line)
 
-        if primary_type!='string_sample': 
+        set_from = None
+        if primary_type=='alien':
+
+            name, set_from = prev_line.split('(')
+
+            name = re.sub('^[\s=+-?#0-9]+', '', name)
+            set_from = set_from[0:-1]
+
+        elif primary_type!='string_sample': 
             name = re.sub('^[\s=+-?#0-9]+', '', prev_line)
 
             name, default_value = check_default(name)
@@ -127,7 +137,7 @@ def parse_dsl(dsl):
 
             default_value = None
         
-        if (primary_type=='param' or primary_type=='optional') and secondary_type is None:
+        if (primary_type=='param' or primary_type=='optional' or primary_type=='alien') and secondary_type is None:
             secondary_type = 'string'
 
         if primary_type=='boolean':
@@ -135,7 +145,7 @@ def parse_dsl(dsl):
             secondary_type = 'boolean'
 
         if name != '':
-            parsed_node_data.append([name, primary_type, secondary_type, prev_depth, default_value])
+            parsed_node_data.append([name, primary_type, secondary_type, prev_depth, default_value, set_from])
             
     return parsed_node_data
 

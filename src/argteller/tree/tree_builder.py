@@ -14,13 +14,14 @@ def construct_tree(parsed_node_data):
 
     for node_data in parsed_node_data:
 
-        node_name, primary_type, secondary_type, depth, default_value = node_data
+        node_name, primary_type, secondary_type, depth, default_value, set_from = node_data
 
         if primary_type=='topic':
             depth = -1
             current_topic = node_name  # Topic has to be on the top of the dsl
 
-        node = TreeNode(depth, node_name, default_value, primary_type, secondary_type)
+        # Todo: also have set_to
+        node = TreeNode(depth, node_name, default_value, primary_type, secondary_type, set_from=set_from)
         parent_nodes[depth] = node
 
         if not primary_type=='topic':
@@ -56,7 +57,7 @@ def _merge_with_preset_tree(node, preset_value_dict):
 
 def display_tree(root):
 
-    print('node_name: primary_type, secondary_type, default_value, preset_value')
+    print('node_name: primary_type, secondary_type, default_value, preset_value, set_from')
         
     _display_tree(root)
     
