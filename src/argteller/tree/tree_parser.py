@@ -7,12 +7,12 @@ from collections import defaultdict
 def check_type(line):
     if '/' in line:
         return 'param_setter'
+    elif line[0:2]=='==':
+        return 'string_sample'
     elif ('(' in line) & (')' in line):
         return 'alien'
     elif line[0]=='-':
         return 'param'
-    elif line[0:2]=='==':
-        return 'string_sample'
     elif line[0]=='=':
         return 'option'
     elif line[0]=='+':
