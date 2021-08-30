@@ -41,7 +41,7 @@ Let's say you have a class named ``Vehicle``. The class has the following ``__in
 
 		# ...Vehicle class definition
 
-
+Note two things: (1) there are predefined valid input values and (2) only some of the arguments are required depending on whether ``vehicle_tyep`` is "car" or "boat". 
 
 
 
