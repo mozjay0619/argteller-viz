@@ -124,11 +124,20 @@ def parse_dsl(dsl):
 
             name, set_from = prev_line.split('(')
 
-            name = re.sub('^[\s=+-?#0-9]+', '', name)
+            name = re.sub('^[\s=+-?]+', '', name)
             set_from = set_from[0:-1]
 
-        elif primary_type!='string_sample': 
-            name = re.sub('^[\s=+-?#0-9]+', '', prev_line)
+        elif primary_type!='string_sample':
+
+            try:
+
+                name = re.sub('^[\s=+-]+', '', prev_line)
+                int(name)
+                name = str(name)
+
+            except ValueError:
+
+                name = re.sub('^[\s=+-?]+', '', prev_line)
 
             name, default_value = check_default(name)
 
