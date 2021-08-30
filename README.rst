@@ -24,19 +24,19 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 	    	Parameters
 	    	----------
 	    	vehicle_type : str
-	    		Valid inputs: "car" or "boat"
+	    	    Valid inputs: "car" or "boat"
 
 	    	num_doors : int
-	    		Only used when vehicle_type is "car". Valid inputs: 2 or 4
+	    	    Only used when vehicle_type is "car". Valid inputs: 2 or 4
 
 	    	car_name : str
-	    		Only used when vehicle_type is "car". 
+	    	    Only used when vehicle_type is "car". 
 
 	    	num_motors : int
-	    		Only used when vehicle_type is "boar". Valid inputs: 1, 2, or 3
+	    	    Only used when vehicle_type is "boar". Valid inputs: 1, 2, or 3
 
 	    	boat_name : str
-	    		Only used when vehicle_type is "boar"
+	    	    Only used when vehicle_type is "boar"
 	    	"""
 
 		# ...Vehicle class definition
