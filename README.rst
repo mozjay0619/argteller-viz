@@ -80,7 +80,7 @@ You can fill in the parameter values for the ``Rider`` class by clicking on the 
 
 Argteller solves the problem of needing to know (1) the (potentially very long) list of parameters, (2) which parameters are required conditionally, and (3) what argument values are valid inputs, where it helps reduce time and hassle to type them in by making them into buttons that you can simply click on to choose. 
 
-But how does this work, and how can we use the ``cool_constructor`` object to initialize our classes? In sections below, we will explain those details. Also, argteller can do so much more than the short sneak peek demo we just saw. We will discuss them later as well. 
+But how does this work, and how can we use the ``cool_constructor`` object to initialize our classes? In sections below, we will explain those details. Also, argteller can do so much more than the short sneak peek demo we just saw. We will slowly get into the rest of the functionalities that argteller has to offer as well. 
 
 DSL
 ---
