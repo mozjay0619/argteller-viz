@@ -78,7 +78,7 @@ If you click "car", the argteller will show you the conditionally required param
 
 You can fill in the parameter values for the ``Rider`` class by clicking on the ``Rider`` tab. 
 
-Argteller solves the problem of (1) needing to know the (potentially very long) list of parameters, (2) needing to know which parameters are required conditionally, and (3) what argument values are valid inputs, where it helps reduce time and hassle to type them in by making them into buttons that you can simply click on to choose. 
+Argteller solves the problem of needing to know (1) the (potentially very long) list of parameters, (2) which parameters are required conditionally, and (3) what argument values are valid inputs, where it helps reduce time and hassle to type them in by making them into buttons that you can simply click on to choose. 
 
 
 
