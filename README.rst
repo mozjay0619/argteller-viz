@@ -13,7 +13,7 @@ Install
 What does it do?
 ----------------
 
-Let's say you have a class named ``Vehicle``. The class has the following ``__init__`` signature:
+Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the following ``__init__`` signatures:
 
 ::
 
@@ -41,11 +41,6 @@ Let's say you have a class named ``Vehicle``. The class has the following ``__in
 
 		# ...Vehicle class definition
 
-Note two things: (1) there are predefined valid input values and (2) only some of the arguments are required depending on whether ``vehicle_tyep`` is "car" or "boat". 
-
-
-
-
 ::
 
 	class Rider():
@@ -63,3 +58,4 @@ Note two things: (1) there are predefined valid input values and (2) only some o
 
 		# ...Rider class definition
 
+Note two things: (1) there may be predefined list of valid input values for a parameter and (2) some arguments are required only conditionally (e.g. ``num_doors`` not needed if ``vehicle_type`` is set to "boat")
