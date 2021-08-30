@@ -13,7 +13,7 @@ Install
 What does it do?
 ----------------
 
-Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the following ``__init__`` signatures:
+Let's say you have a class ``Vehicle``. The class has the following ``__init__`` signature:
 
 ::
 
@@ -40,6 +40,11 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 	    	"""
 
 		# ...Vehicle class definition
+
+
+
+
+
 
 ::
 
