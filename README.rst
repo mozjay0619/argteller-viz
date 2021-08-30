@@ -76,4 +76,13 @@ If you click "car", the argteller will show you the conditionally required param
 .. image:: https://github.com/mozjay0619/argteller-viz/blob/master/media/cool_constructor_4.png
    :width: 17pt
 
+You can fill in the parameter values for the ``Rider`` class by clicking on the ``Rider`` tab. 
+
+
+
+
+
+
+
+
 
