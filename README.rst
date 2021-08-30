@@ -47,6 +47,13 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 
 	    def __init__(self, rider_name, rider_height, rider_weight):
 	    	"""
+	    	Parameters
+	    	----------
+	    	rider_name : str
+
+	    	rider_height : float
+
+	    	rider_weight : float
 	    	"""
 
 		# ...Rider class definition
