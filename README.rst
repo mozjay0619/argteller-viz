@@ -22,6 +22,7 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 	    def __init__(self, vehicle_type, num_doors=None, car_name=None, num_motors=None, boat_name=None):
 
 		# ...Vehicle class definition
+		
 
 	class Rider():
 
