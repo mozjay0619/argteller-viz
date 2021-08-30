@@ -13,7 +13,7 @@ Install
 What does it do?
 ----------------
 
-Let's take a look at an example. Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the following ``__init__`` signatures:
+Let's take an example use case. Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the following ``__init__`` signatures:
 
 ::
 
