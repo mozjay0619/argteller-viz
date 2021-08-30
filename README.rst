@@ -20,6 +20,24 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 	class Vehicle():
 
 	    def __init__(self, vehicle_type, num_doors=None, car_name=None, num_motors=None, boat_name=None):
+	    	"""
+	    	Parameters
+	    	----------
+	    	vehicle_type : str
+	    		Valid inputs: "car" or "boat"
+
+	    	num_doors : int
+	    		Only used when vehicle_type is "car". Valid inputs: 2 or 4
+
+	    	car_name : str
+	    		Only used when vehicle_type is "car". 
+
+	    	num_motors : int
+	    		Only used when vehicle_type is "boar". Valid inputs: 1, 2, or 3
+
+	    	boat_name : str
+	    		Only used when vehicle_type is "boar"
+	    	"""
 
 		# ...Vehicle class definition
 
@@ -28,6 +46,8 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 	class Rider():
 
 	    def __init__(self, rider_name, rider_height, rider_weight):
+	    	"""
+	    	"""
 
 		# ...Rider class definition
 
