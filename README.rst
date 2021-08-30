@@ -3,7 +3,7 @@ Argteller
 
 The argteller package provides the class and method decorators for visual and interactive class object constructor. It frees the user from needing to constantly refer to documentations to figure out what arguments are required and what parameter values are valid inputs. It lists required arguments parsimoniously by only asking the parameters as needed, depending on the previously provided argument values. You can easily encode them in the custom DSL (domain specific language) script. 
 
-This tool is useful in the Jupyter interface. It thus caters to the Python's interactive development capability.
+This tool is useful in the Jupyter interface. It thus caters to the Python's interactive development capability. It also helps with code reproducibility by providing an easy way to share the parameter configurations.
 
 Install
 -------
@@ -62,7 +62,13 @@ Let's take an example use case. Let's say you have two classes ``Vehicle`` and `
 
 Note the following: (1) there may be predefined list of valid input values for a given parameter and (2) some arguments are required only conditionally (e.g. ``n_doors`` is not needed if ``vehicle_type`` is set to "boat"). As the number of parameters grow, these will become harder to keep track of, requiring the user to constantly refer to the documentation to figure out the signature requirements.
 
-Without going into code details, let us 
+Without going into code details, let us see what argteller can do for us. The argteller lets us define a separate class, say, ``CoolConstructor``. If you initialize ``CoolConstructor`` you will see interactive widgets that will help you fill out the required arguments:
+
+::
+
+	CoolConstructor()
+
+
 
 
 
