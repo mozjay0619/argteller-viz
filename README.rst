@@ -71,6 +71,9 @@ Without going into code details, let us see what argteller can do for us. The ar
 .. image:: https://github.com/mozjay0619/argteller-viz/blob/master/media/cool_constructor_2.png
    :width: 17pt
 
+If you click "car", the argteller will show you the conditionally required parameters:
 
+.. image:: https://github.com/mozjay0619/argteller-viz/blob/master/media/cool_constructor_3.png
+   :width: 17pt
 
 
