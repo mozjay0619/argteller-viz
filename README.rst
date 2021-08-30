@@ -13,7 +13,7 @@ Install
 What does it do?
 ----------------
 
-Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the following ``__init__`` signatures:
+Let's take a look at an example. Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the following ``__init__`` signatures:
 
 ::
 
@@ -59,6 +59,7 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 		# ...Rider class definition
 
 Note the following: (1) there may be predefined list of valid input values for a given parameter and (2) some arguments are required only conditionally (e.g. ``n_doors`` is not needed if ``vehicle_type`` is set to "boat"). As the number of parameters grow, these will become harder to keep track of, requiring the user to constantly refer to the documentation to figure out the signature requirements.
+
 
 
 
