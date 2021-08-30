@@ -58,4 +58,9 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 
 		# ...Rider class definition
 
-Note two things: (1) there may be predefined list of valid input values for a parameter and (2) some arguments are required only conditionally (e.g. ``num_doors`` not needed if ``vehicle_type`` is set to "boat")
+Note the following: (1) there may be predefined list of valid input values for a given parameter and (2) some arguments are required only conditionally (e.g. ``num_doors`` is not needed if ``vehicle_type`` is set to "boat"). As the number of parameters grow, these will become harder to keep track of, requiring the user to constantly refer to the documentation to figure out the signature requirements.
+
+
+
+
+
