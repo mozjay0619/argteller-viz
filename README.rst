@@ -68,7 +68,7 @@ Without going into code details, let us see what argteller can do for us. The ar
 
 	CoolConstructor()
 
-.. image:: https://github.com/mozjay0619/argteller-viz/blob/master/media/cool_const1.png
+.. image:: https://github.com/mozjay0619/argteller-viz/blob/master/media/cool_constructor1.png
    :width: 17pt
 
 
