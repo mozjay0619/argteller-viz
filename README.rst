@@ -19,20 +19,20 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 
 	class Vehicle():
 
-	    def __init__(self, vehicle_type, num_doors=None, car_name=None, num_motors=None, boat_name=None):
+	    def __init__(self, vehicle_type, n_doors=None, car_name=None, n_motors=None, boat_name=None):
 	    	"""
 	    	Parameters
 	    	----------
 	    	vehicle_type : str
 	    	    Valid inputs: "car" or "boat"
 
-	    	num_doors : int
+	    	n_doors : int
 	    	    Only used when vehicle_type is "car". Valid inputs: 2 or 4
 
 	    	car_name : str
 	    	    Only used when vehicle_type is "car". 
 
-	    	num_motors : int
+	    	n_motors : int
 	    	    Only used when vehicle_type is "boar". Valid inputs: 1, 2, or 3
 
 	    	boat_name : str
@@ -58,7 +58,7 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 
 		# ...Rider class definition
 
-Note the following: (1) there may be predefined list of valid input values for a given parameter and (2) some arguments are required only conditionally (e.g. ``num_doors`` is not needed if ``vehicle_type`` is set to "boat"). As the number of parameters grow, these will become harder to keep track of, requiring the user to constantly refer to the documentation to figure out the signature requirements.
+Note the following: (1) there may be predefined list of valid input values for a given parameter and (2) some arguments are required only conditionally (e.g. ``n_doors`` is not needed if ``vehicle_type`` is set to "boat"). As the number of parameters grow, these will become harder to keep track of, requiring the user to constantly refer to the documentation to figure out the signature requirements.
 
 
 
