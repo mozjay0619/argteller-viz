@@ -23,10 +23,11 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 
 		# ...Vehicle class definition
 
+::
 
 	class Rider():
 
-	def __init__(self, rider_name, rider_height, rider_weight):
+	    def __init__(self, rider_name, rider_height, rider_weight):
 
 		# ...Rider class definition
 
