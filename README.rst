@@ -66,7 +66,7 @@ Without going into code details, let us see what argteller can do for us. The ar
 
 ::
 
-	CoolConstructor()
+	cool_constructor = CoolConstructor()
 
 .. image:: https://github.com/mozjay0619/argteller-viz/blob/master/media/cool_constructor_1.png
    :width: 17pt
