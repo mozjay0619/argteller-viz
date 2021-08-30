@@ -19,9 +19,15 @@ Let's say you have two classes ``Vehicle`` and ``Rider``. Each class has the fol
 
 	class Vehicle():
 
-		def __init__(self, vehicle_type, num_doors=None, car_name=None, num_motors=None, boat_name=None):
+		def __init__(self, vehicle_type, 
+			num_doors=None, car_name=None, 
+			num_motors=None, boat_name=None):
+
+		# ...Vehicle class definition
 
 	class Rider():
 
 		def __init__(self, rider_name, rider_height, rider_weight):
+
+		# ...Rider class definition
 
