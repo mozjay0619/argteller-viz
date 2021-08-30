@@ -13,7 +13,7 @@ Install
 What does it do?
 ----------------
 
-Let's say you have a class ``Vehicle``. The class has the following ``__init__`` signature:
+Let's say you have a class named ``Vehicle``. The class has the following ``__init__`` signature:
 
 ::
 
