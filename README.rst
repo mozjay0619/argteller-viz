@@ -69,12 +69,10 @@ Without going into code details, let us see what argteller can do for us. The ar
 	cool_constructor = CoolConstructor()
 
 .. image:: https://github.com/mozjay0619/argteller-viz/blob/master/media/cool_constructor_2.png
-   :width: 17pt
 
 If you click "car", the argteller will show you the conditionally required parameters, which you can fill in likewise.
 
 .. image:: https://github.com/mozjay0619/argteller-viz/blob/master/media/cool_constructor_4.png
-   :width: 17pt
 
 You can fill in the parameter values for the ``Rider`` class by clicking on the ``Rider`` tab. 
 
