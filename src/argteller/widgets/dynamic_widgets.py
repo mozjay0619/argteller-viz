@@ -167,6 +167,7 @@ class DynamicWidget(VBox):
                         example=string_sample, 
                         default_value=default_value,
                         preset_value=preset_value,
+                        optional=is_optional_param, 
                         widget_initialized=False,
                         param_setter_event=self.param_setter_event)
                     
