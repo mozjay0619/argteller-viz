@@ -145,6 +145,11 @@ def parse_dsl(dsl):
             name = re.sub('^[\s=]+', '', prev_line)
 
             default_value = None
+
+        if secondary_type=='string_sample':
+            has_string_sample = True
+        else:
+            has_string_sample = False
         
         if (primary_type=='param' or primary_type=='optional' or primary_type=='alien') and secondary_type is None:
             secondary_type = 'string'
@@ -154,7 +159,7 @@ def parse_dsl(dsl):
             secondary_type = 'boolean'
 
         if name != '':
-            parsed_node_data.append([name, primary_type, secondary_type, prev_depth, default_value, set_from])
+            parsed_node_data.append([name, primary_type, secondary_type, has_string_sample, prev_depth, default_value, set_from])
             
     return parsed_node_data
 
