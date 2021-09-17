@@ -67,10 +67,5 @@ def get_control_panel(access_object):
     
     v = DynamicSwitch(topic_choice_box, tab_box, access_object)
 
-
-
-
-
-    
     return v
 
