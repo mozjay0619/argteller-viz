@@ -394,6 +394,8 @@ class ArgtellerClassDecorator():
 
                         dsl = f.read()
 
+                    cls_self.__control_panel__.filepath_widget.value = inp
+
                 else:
 
                     dsl = inp
