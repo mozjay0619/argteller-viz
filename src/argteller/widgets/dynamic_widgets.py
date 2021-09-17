@@ -86,7 +86,11 @@ class DynamicWidget(VBox):
 
             elif node.secondary_type=='boolean':
 
+
+
                 if self.node.name in self.widget_dicts[self.topic]:
+
+
 
                     widget = self.widget_dicts[self.topic][self.node.name]
 
@@ -100,9 +104,18 @@ class DynamicWidget(VBox):
                         param_setter_event=self.param_setter_event)
 
                 else:
+
+                    # this condition is redundant with 
+                    # secondary_type == 'string_sample'
+                    if self.node.has_string_sample:
+                        string_sample_node = node.children[0]
+                        string_sample = string_sample_node.name
+                    else:
+                        string_sample = None
                     
                     self.widget = ParamBooleanWidget(
                         name=self.node.name, 
+                        example=string_sample,
                         default_value=default_value, 
                         preset_value=preset_value, 
                         optional=is_optional_param,
@@ -129,9 +142,16 @@ class DynamicWidget(VBox):
                         set_from=self.node.set_from)
 
                 else:
+
+                    if self.node.has_string_sample:
+                        string_sample_node = node.children[0]
+                        string_sample = string_sample_node.name
+                    else:
+                        string_sample = None
                 
                     self.widget = ParamTextWidget(
                         name=self.node.name, 
+                        example=string_sample, 
                         default_value=default_value,
                         preset_value=preset_value,
                         optional=is_optional_param,
@@ -141,6 +161,9 @@ class DynamicWidget(VBox):
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                     self.widget_nodes[self.topic][self.node.name] = self.widget
+
+
+
                    
             elif node.secondary_type=='string_sample':
 
@@ -173,6 +196,10 @@ class DynamicWidget(VBox):
                     
                     self.widget_dicts[self.topic][self.node.name] = self.widget.widget
                     self.widget_nodes[self.topic][self.node.name] = self.widget
+
+
+
+
                 
         elif node.primary_type=='custom1':
             
@@ -205,8 +232,10 @@ class DynamicWidget(VBox):
             
         self.dynamic_widget_holder = VBox()
         
+
+
         children = [
-            self.widget, 
+            self.widget,
             self.dynamic_widget_holder
         ]
 
@@ -299,13 +328,20 @@ class DynamicWidget(VBox):
 
         if self.node.secondary_type=='boolean':
 
+
+
             if input_value == True:
 
                 for child_node in self.node.children:
 
+                    # to support string example for boolean
+                    if child_node.primary_type=='string_sample':
+                        continue
+
                     widget = DynamicWidget(self.topic, child_node, self.widget_dicts, self.widget_nodes, self.initial_event, self.param_setter_event,
                         gui_triggered=True)
                     new_widgets.append(widget)
+
 
 
         else:

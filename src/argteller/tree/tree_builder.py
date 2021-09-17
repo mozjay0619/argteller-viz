@@ -14,14 +14,14 @@ def construct_tree(parsed_node_data):
 
     for node_data in parsed_node_data:
 
-        node_name, primary_type, secondary_type, depth, default_value, set_from = node_data
+        node_name, primary_type, secondary_type, has_string_sample, depth, default_value, set_from = node_data
 
         if primary_type=='topic':
             depth = -1
             current_topic = node_name  # Topic has to be on the top of the dsl
 
         # Todo: also have set_to
-        node = TreeNode(depth, node_name, default_value, primary_type, secondary_type, set_from=set_from)
+        node = TreeNode(depth, node_name, default_value, primary_type, secondary_type, has_string_sample, set_from=set_from)
         parent_nodes[depth] = node
 
         if not primary_type=='topic':

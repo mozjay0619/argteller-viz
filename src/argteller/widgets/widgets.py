@@ -79,10 +79,96 @@ class ParamTextWidget(VBox):
         
         return self.widget.children[-1].value
 
+class ParamBooleanWidget(VBox):
+    
+    def __init__(self, name, example=None, 
+        default_value=None, preset_value=None, optional=False, widget=None, widget_initialized=None, param_setter_event=None):
+        
+        if not isinstance(VBox, MetaHasTraits):
+            return
+
+        self.name = name
+        self.type = 'boolean'
+        
+        self.initial = not widget_initialized
+        self.param_setter_event = param_setter_event
+        
+        if preset_value:
+            label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
+        elif optional:
+            label = widgets.HTML(f"<b><font size=2 color='grey'>{self.name}</b>")
+        else:
+            label = widgets.HTML(f"<b><font size=2 color='black'>{self.name}</b>")
+            
+        if widget:
+            self.widget = widget
+        else:
+
+            # if example is None:
+            #     self.widget = VBox([widgets.Text(style=style, layout=layout)])
+            # else:
+            #     self.widget = VBox([
+            #         widgets.Label(value=example),
+            #         widgets.Text(style=style, layout=layout)])
+
+            if example is None:
+                self.widget =  VBox([
+                    widgets.Checkbox(
+                        value=False,
+                        description='True',
+                        disabled=False,
+                        indent=False
+                )])
+            else:
+
+                self.widget =  VBox([
+                    widgets.Label(value=example),
+                    widgets.Checkbox(
+                        value=False,
+                        description='True',
+                        disabled=False,
+                        indent=False)
+                    ])
+
+                # self.widget = VBox([
+                #     widgets.Label(value=example),
+                #     widgets.Text(style=style, layout=layout)])
+
+
+
+
+            
+            
+        if self.initial or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
+
+            if preset_value is not None:  # So that preset values take precedence over default values.
+            
+                self.widget.children[-1].value = bool(preset_value)
+                
+            elif default_value is not None:  
+
+                self.widget.children[-1].value = bool(default_value)
+
+            else:
+
+                self.widget.children[-1].value = False
+
+            
+            self.initial = False
+
+        children = [label, self.widget]
+        super().__init__(children=children)
+        
+    def get_value(self):
+        
+        return self.widget.children[-1].value
+
+
 
 class ParamChoiceWidget(VBox):
     
-    def __init__(self, name, options, default_value=None, preset_value=None, optional=False, widget=None, widget_initialized=None, param_setter_event=None):
+    def __init__(self, name, example=None, 
+        options=None, default_value=None, preset_value=None, optional=False, widget=None, widget_initialized=None, param_setter_event=None):
 
         if not isinstance(VBox, MetaHasTraits):
             return
@@ -173,59 +259,6 @@ class ParamSetterWidget(VBox):
         super().__init__(children=children)
 
 
-class ParamBooleanWidget(VBox):
-    
-    def __init__(self, name, default_value=None, preset_value=None, optional=False, widget=None, widget_initialized=None, param_setter_event=None):
-        
-        if not isinstance(VBox, MetaHasTraits):
-            return
-
-        self.name = name
-        self.type = 'boolean'
-        
-        self.initial = not widget_initialized
-        self.param_setter_event = param_setter_event
-        
-        if preset_value:
-            label = widgets.HTML(f"<b><font size=2 color='blue'>{self.name}</b>")
-        elif optional:
-            label = widgets.HTML(f"<b><font size=2 color='grey'>{self.name}</b>")
-        else:
-            label = widgets.HTML(f"<b><font size=2 color='black'>{self.name}</b>")
-            
-        if widget:
-            self.widget = widget
-        else:
-            self.widget =  VBox([widgets.Checkbox(
-                value=False,
-                description='True',
-                disabled=False,
-                indent=False
-            )])
-            
-        if self.initial or self.param_setter_event.isSet() :  # So that user input is not overwritten every time.
-
-            if preset_value is not None:  # So that preset values take precedence over default values.
-            
-                self.widget.children[0].value = bool(preset_value)
-                
-            elif default_value is not None:  
-
-                self.widget.children[0].value = bool(default_value)
-
-            else:
-
-                self.widget.children[0].value = False
-
-            
-            self.initial = False
-
-        children = [label, self.widget]
-        super().__init__(children=children)
-        
-    def get_value(self):
-        
-        return self.widget.children[-1].value
 
 
 
