@@ -92,13 +92,7 @@ class DynamicWidget(VBox):
 
 
 
-                if self.node.name in self.widget_dicts[self.topic] or \
-                    (self.node.is_shared_param and self.widget_dicts.get_values(self.node.name)):
-
-                    if not self.node.is_shared_param:
-                        widget = self.widget_dicts[self.topic][self.node.name]
-                    else:
-                        widget = self.widget_dicts.get_values(self.node.name)[0]
+                if self.node.name in self.widget_dicts[self.topic]:
 
 
 

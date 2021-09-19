@@ -155,7 +155,7 @@ def parse_dsl(dsl):
         else:
             has_string_sample = False
         
-        if (primary_type=='param' or primary_type=='optional' or primary_type=='alien') and secondary_type is None:
+        if (primary_type=='param' or primary_type=='optional' or primary_type=='alien' or primary_type=='shared') and secondary_type is None:
             secondary_type = 'string'
 
         if primary_type=='boolean':
