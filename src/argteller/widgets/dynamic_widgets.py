@@ -63,10 +63,11 @@ class DynamicWidget(VBox):
                         widget = self.widget_dicts[self.topic][self.node.name]
                     else:
                         widget = self.widget_dicts.get_values(self.node.name)[0]
+                        widget_node = self.widget_nodes.get_values(self.node.name)[0]
 
                     if self.node.name not in self.widget_dicts[self.topic]:
                         self.widget_dicts[self.topic][self.node.name] = widget
-                        # self.widget_nodes[self.topic][self.node.name] = widget
+                        self.widget_nodes[self.topic][self.node.name] = widget_node
 
                     self.widget = ParamChoiceWidget(
                         name=self.node.name, 
@@ -142,10 +143,11 @@ class DynamicWidget(VBox):
                         widget = self.widget_dicts[self.topic][self.node.name]
                     else:
                         widget = self.widget_dicts.get_values(self.node.name)[0]
+                        widget_node = self.widget_nodes.get_values(self.node.name)[0]
 
                     if self.node.name not in self.widget_dicts[self.topic]:
                         self.widget_dicts[self.topic][self.node.name] = widget
-                        # self.widget_nodes[self.topic][self.node.name] = widget
+                        self.widget_nodes[self.topic][self.node.name] = widget_node
 
                     self.widget = ParamTextWidget(
                         name=self.node.name, 
