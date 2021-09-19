@@ -1,7 +1,9 @@
 class TreeNode():
+
     
-    def __init__(self, depth, name, default_value, primary_type, secondary_type=None, has_string_sample=False, preset_value=None,
+    def __init__(self, depth, name, default_value, primary_type, secondary_type=None, has_string_sample=False, is_shared_param=False, preset_value=None,
         set_from=None):
+
         
         self.depth = depth
         self.name = name
@@ -11,6 +13,7 @@ class TreeNode():
         self.primary_type = primary_type
         self.secondary_type = secondary_type
         self.has_string_sample = has_string_sample
+        self.is_shared_param = is_shared_param
 
         self.set_from = set_from
         
@@ -40,5 +43,5 @@ class TreeNode():
         return None
         
     def __repr__(self):
-        return ('{}_{}_{}_{}'.format(self.name, self.primary_type, self.secondary_type, self.has_string_sample))
+        return ('{}_{}_{}_{}'.format(self.name, self.primary_type, self.secondary_type, self.has_string_sample, self.is_shared_param))
 

@@ -1,6 +1,7 @@
 from ..tree.tree_node import TreeNode
 from ..tree.tree_builder import display_tree
 from ..widgets.dynamic_widgets import DynamicWidget
+from ..utils.data_structure_utils import nested_defaultdict
 
 try:
 
@@ -15,7 +16,7 @@ except ModuleNotFoundError:
 
     module_found = False
 
-from collections import defaultdict
+
 from threading import Event
 
 
@@ -34,8 +35,8 @@ class AccessObject():
             return
         
         self.root, self.node_dicts = root, node_dicts
-        self.widget_dicts = defaultdict(dict)
-        self.widget_nodes = defaultdict(dict)  # this should replace widget_dicts, so we don't have duplicates
+        self.widget_dicts = nested_defaultdict(dict)
+        self.widget_nodes = nested_defaultdict(dict)  # this should replace widget_dicts, so we don't have duplicates
 
         # we don't have duplicates they are the same objects.
         self.param_vboxes = {}

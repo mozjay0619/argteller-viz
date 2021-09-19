@@ -20,7 +20,8 @@ def check_type(line):
     elif line[0]=='?':
         return 'boolean'
     elif line[0]=='#':
-        return 'custom{}'.format(line[1])
+        # return 'custom{}'.format(line[1])
+        return 'shared'
     else:
         return 'topic'
 
@@ -75,6 +76,9 @@ def get_depth(line):
     return tab_depth + space_depth
 
 def parse_dsl(dsl):
+    """Used at class_decorator.
+    Goes into construct_tree method from tree_builder.py file.
+    """
 
     parsed_node_data = []
 
@@ -137,12 +141,12 @@ def parse_dsl(dsl):
 
             except ValueError:
 
-                name = re.sub('^[\s=+-?]+', '', prev_line)
+                name = re.sub('^[\s=+-?#]+', '', prev_line)
 
             name, default_value = check_default(name)
 
         else:
-            name = re.sub('^[\s=]+', '', prev_line)
+            name = re.sub('^[\s=#]+', '', prev_line)
 
             default_value = None
 
@@ -158,8 +162,14 @@ def parse_dsl(dsl):
             primary_type = 'param'
             secondary_type = 'boolean'
 
+        if primary_type=='shared':
+            primary_type = 'param'
+            is_shared_param = True
+        else:
+            is_shared_param = False
+
         if name != '':
-            parsed_node_data.append([name, primary_type, secondary_type, has_string_sample, prev_depth, default_value, set_from])
+            parsed_node_data.append([name, primary_type, secondary_type, has_string_sample, is_shared_param, prev_depth, default_value, set_from])
             
     return parsed_node_data
 
