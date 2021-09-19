@@ -139,7 +139,12 @@ class AccessObject():
         The returned values will be casted into castable types in the class
         decorator just before the values are returned to the user.
         """
-        return self.get_widget(param, topic).value
+        try:
+            return self.get_widget(param, topic).value
+        except:
+
+            print(self.widget_dicts)
+            print(param, topic, '======')
 
     def set_value(self, value, param, topic=None):
 
