@@ -56,9 +56,13 @@ class DynamicWidget(VBox):
                 
                 options = node.get_children_names() 
 
-                if self.node.name in self.widget_dicts[self.topic]:
+                if self.node.name in self.widget_dicts[self.topic] or \
+                    (self.node.is_shared_param and self.widget_dicts.get_values(self.node.name)):
 
-                    widget = self.widget_dicts[self.topic][self.node.name]
+                    if not self.node.is_shared_param:
+                        widget = self.widget_dicts[self.topic][self.node.name]
+                    else:
+                        widget = self.widget_dicts.get_values(self.node.name)[0]
 
                     self.widget = ParamChoiceWidget(
                         name=self.node.name, 
@@ -127,9 +131,13 @@ class DynamicWidget(VBox):
                    
             elif node.secondary_type=='string':
 
-                if self.node.name in self.widget_dicts[self.topic]:
+                if self.node.name in self.widget_dicts[self.topic] or \
+                    (self.node.is_shared_param and self.widget_dicts.get_values(self.node.name)):
 
-                    widget = self.widget_dicts[self.topic][self.node.name]
+                    if not self.node.is_shared_param:
+                        widget = self.widget_dicts[self.topic][self.node.name]
+                    else:
+                        widget = self.widget_dicts.get_values(self.node.name)[0]
 
                     self.widget = ParamTextWidget(
                         name=self.node.name, 
