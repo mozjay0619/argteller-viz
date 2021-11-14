@@ -305,6 +305,18 @@ class AccessObject():
         
         input_value = self.get_value(param.name, topic.name)
 
+
+        # print(param.name, param.secondary_type, input_value, '+++', param.secondary_type=='boolean', type(input_value))
+
+        # if param.name=='simulate_treatment_effect':
+
+        #     print()
+
+        #     print(param.children)
+
+        #     print()
+
+
         if param.name in self.widget_nodes[topic.name]:  # For the topic/param names
 
             widget_type = self.widget_nodes[topic.name][param.name].type
@@ -329,13 +341,24 @@ class AccessObject():
 
         elif widget_type=='boolean':
 
+            # print(param.name, '******')
+
             dsl_gen[0] += "-{}:{}\n".format(param.name, input_value)
             added_params.append(param.name)
+
+            if input_value:
+
+                for child_node in param.children:
+
+                    if child_node.primary_type=='param':
+                        
+                        self._follow_branch(child_node, topic, dsl_gen, added_params)
+
 
         for child_node in param.children:  # Since this is choice param, child_nodes are all options
             
             if child_node.name==input_value:
-                
+
                 for _child_node in child_node.children:
                     
                     self._follow_branch(_child_node, topic, dsl_gen, added_params)
