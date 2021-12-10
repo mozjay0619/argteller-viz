@@ -232,7 +232,11 @@ class DynamicWidget(VBox):
 
             # node_name is some node that already exists in some other topic
 
-            widget = self.widget_dicts[topic][node_name]
+            try:
+                widget = self.widget_dicts[topic][node_name]
+            except KeyError:
+                raise KeyError("[ {} ] node does not exist in [ {} ] topic. Please go to the topic [ {} ] and set the node [ {} ] or avoid using nodes that share that parameter.".format(
+                    node_name, topic, topic, node_name))
 
             # recall that widget that already exists
 
