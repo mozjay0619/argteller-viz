@@ -341,6 +341,10 @@ class ArgtellerClassDecorator():
 
                 if value=='':
                     return None
+
+                if ',' in value:
+                    value = value.split(',')
+                    value = [elem.strip() for elem in value]
                 
                 return value
 
