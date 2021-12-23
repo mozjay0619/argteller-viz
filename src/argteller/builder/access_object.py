@@ -78,7 +78,6 @@ class AccessObject():
 
             return l
 
-
     def get_effective_params(self, topic=None):
 
         effective_params = []
@@ -86,8 +85,6 @@ class AccessObject():
         params = self.get_params(topic)
 
         for param in params:
-
-            
 
             widget_type = self.widget_nodes[topic][param].type
 
@@ -139,17 +136,19 @@ class AccessObject():
         The returned values will be casted into castable types in the class
         decorator just before the values are returned to the user.
         """
-        try:
-            return self.get_widget(param, topic).value
-        except:
-
-            print(self.widget_dicts)
-            print(param, topic, '======')
+        
+        return self.get_widget(param, topic).value
 
     def set_value(self, value, param, topic=None):
 
+        try:
+            widget_type = self.get_widget_node(param, topic).type
 
-        widget_type = self.get_widget_node(param, topic).type
+        except:
+            
+            print("The parameter [ {} ] in topic [ {} ] does not exist anymore. Skipping it.".format(param, topic))
+
+            return 
 
         if widget_type=='boolean':
             self.get_widget(param, topic).value = eval(value)
@@ -157,29 +156,20 @@ class AccessObject():
         else:
             self.get_widget(param, topic).value = str(value)            
 
-
     def get_vbox(self, topic):
         
         return self.param_vboxes[topic]
 
     def get_widget_node(self, param, topic=None):
 
-        # return self.widget_nodes[topic][param]
-
-
         if topic:
 
-
-            
-            
             try:
                 return self.widget_nodes[topic][param]
             except:
-                pass
-            
-                print(param, topic, '=====')
-                print(self.widget_dicts, '+++++')
-        
+
+                return None
+
         else:
             
             params = []
@@ -205,17 +195,8 @@ class AccessObject():
         
         if topic:
 
+            return self.widget_dicts[topic][param].children[-1]
 
-            
-            
-            try:
-                return self.widget_dicts[topic][param].children[-1]
-            except:
-                pass
-            
-                print(param, topic, '=====')
-                print(self.widget_dicts, '+++++')
-        
         else:
             
             params = []
@@ -232,8 +213,6 @@ class AccessObject():
                 
                 raise TypeError('Specify the topic!', topics)
 
-            
-                
             return params[0].children[-1]
         
     def get_node(self, node, topic=None):
@@ -302,9 +281,7 @@ class AccessObject():
         """Notice the similarity to _add_widgets method in DynamicWidget
         class
         """
-        
         input_value = self.get_value(param.name, topic.name)
-
 
         # print(param.name, param.secondary_type, input_value, '+++', param.secondary_type=='boolean', type(input_value))
 
@@ -315,7 +292,6 @@ class AccessObject():
         #     print(param.children)
 
         #     print()
-
 
         if param.name in self.widget_nodes[topic.name]:  # For the topic/param names
 
@@ -341,8 +317,6 @@ class AccessObject():
 
         elif widget_type=='boolean':
 
-            # print(param.name, '******')
-
             dsl_gen[0] += "-{}:{}\n".format(param.name, input_value)
             added_params.append(param.name)
 
@@ -354,7 +328,6 @@ class AccessObject():
                         
                         self._follow_branch(child_node, topic, dsl_gen, added_params)
 
-
         for child_node in param.children:  # Since this is choice param, child_nodes are all options
             
             if child_node.name==input_value:
@@ -362,4 +335,3 @@ class AccessObject():
                 for _child_node in child_node.children:
                     
                     self._follow_branch(_child_node, topic, dsl_gen, added_params)
-
