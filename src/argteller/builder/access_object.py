@@ -324,7 +324,7 @@ class AccessObject():
 
                 for child_node in param.children:
 
-                    if child_node.primary_type=='param':
+                    if child_node.primary_type=='param' or child_node.primary_type=='optional':
                         
                         self._follow_branch(child_node, topic, dsl_gen, added_params)
 
